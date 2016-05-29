@@ -31,8 +31,9 @@ class Iso {
 
         do {
             //Set the offset 
-            
             fseek($this->file, $offset);    
+            
+            //Read the box size
             $dataBuffer = fread ( $this->file , 4 );
             $dataBuffer = unpack("N", $dataBuffer );
             $boxSize =$dataBuffer[1];

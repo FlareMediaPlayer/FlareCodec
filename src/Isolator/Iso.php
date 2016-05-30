@@ -18,7 +18,6 @@ class Iso {
         $this->filename = $filename;
         $this->file = fopen($this->filename, "rb+") or die("Unable to open file!");
         $this->fileSize = filesize($filename);
-        
         $this->loadData();
         
     }
@@ -33,10 +32,7 @@ class Iso {
             //Set the offset 
             fseek($this->file, $offset);    
             
-            //Read the box size
-            $dataBuffer = fread ( $this->file , 4 );
-            $dataBuffer = unpack("N", $dataBuffer );
-            $boxSize =$dataBuffer[1];
+            $boxSize = ByteUtils::readUnsingedInteger($this->file);
             
         
           
@@ -49,10 +45,6 @@ class Iso {
     }
     
     
-    public static function readUnsingedInteger($file){
-        $dataBuffer = fread ( $file , 4 );
-        $dataBuffer = unpack("N", $dataBuffer );
-        return $dataBuffer[1];
-    }
+
 
 }

@@ -17,8 +17,9 @@ class ByteUtils {
     
     public static function readUnsingedInteger($file){
         $dataBuffer = fread ( $file , 4 );
-        $dataBuffer = unpack("N", $binarydata );
+        $dataBuffer = unpack("N", $dataBuffer );
         return $dataBuffer[1];
     }
+    
     
 }

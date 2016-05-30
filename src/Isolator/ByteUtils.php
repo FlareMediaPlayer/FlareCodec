@@ -21,5 +21,11 @@ class ByteUtils {
         return $dataBuffer[1];
     }
     
+    public static function readBoxType($file){
+        $dataBuffer = fread ( $file , 4 );
+        $dataBuffer = unpack("C*", $dataBuffer );
+        return chr($dataBuffer[1]) . chr($dataBuffer[2]) . chr($dataBuffer[3]) . chr($dataBuffer[4]);
+    }
+    
     
 }

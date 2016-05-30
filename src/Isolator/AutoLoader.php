@@ -30,6 +30,7 @@ class AutoLoader {
 
         if (file_exists($file)) {
             require $file;
+         
         }
     }
 

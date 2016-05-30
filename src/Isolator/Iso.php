@@ -12,14 +12,16 @@ class Iso {
     private $filename;
     private $file;
     private $fileSize;
+    private $boxMap;
 
     function __construct($filename) {
 
         $this->filename = $filename;
         $this->file = fopen($this->filename, "rb+") or die("Unable to open file!");
         $this->fileSize = filesize($filename);
+        $this->boxMap = [];
         $this->loadData();
-      
+        var_dump($this->boxMap);
 
         
     }
@@ -39,10 +41,11 @@ class Iso {
             $boxType = ByteUtils::readBoxType($this->file);
             
 
+            if (array_key_exists($boxType, Box::$boxTable)) {
+                $this->boxMap[] = Box::$boxTable[$boxType]->newInstance();
+            }
 
-
-            var_dump($boxSize);
-            var_dump($boxType);
+            
 
             $offset += $boxSize;
             

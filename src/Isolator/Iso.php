@@ -19,7 +19,9 @@ class Iso {
         $this->file = fopen($this->filename, "rb+") or die("Unable to open file!");
         $this->fileSize = filesize($filename);
         $this->loadData();
+      
 
+        
     }
 
     public function loadData() {
@@ -34,10 +36,13 @@ class Iso {
             fseek($this->file, $offset);
 
             $boxSize = ByteUtils::readUnsingedInteger($this->file);
+            $boxType = ByteUtils::readBoxType($this->file);
+            
 
 
 
             var_dump($boxSize);
+            var_dump($boxType);
 
             $offset += $boxSize;
             

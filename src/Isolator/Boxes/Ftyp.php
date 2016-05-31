@@ -51,8 +51,4 @@ class Ftyp extends \Isolator\Box {
         
     }
 
-
-    public function displayDetailedBoxMap(){
-        
-    }
 }

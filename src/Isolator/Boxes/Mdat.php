@@ -22,8 +22,4 @@ class Mdat extends \Isolator\Box {
         
     }
 
-    public function displayDetailedBoxMap(){
-        
-    }
-
 }

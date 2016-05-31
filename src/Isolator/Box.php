@@ -14,6 +14,7 @@ abstract class Box {
     const MDAT = "mdat";
     const MOOV = "moov";
     const MVHD = "mvhd";
+    const TRAK = "trak";
 
     
     public static $boxTable = [];
@@ -31,11 +32,12 @@ abstract class Box {
 
     public static function __init__() {
 
-        self::$boxTable['free'] = new \ReflectionClass("\Isolator\Boxes\Free");
-        self::$boxTable['ftyp'] = new \ReflectionClass("\Isolator\Boxes\Ftyp");
-        self::$boxTable['mdat'] = new \ReflectionClass("\Isolator\Boxes\Mdat");
-        self::$boxTable['moov'] = new \ReflectionClass("\Isolator\Boxes\Moov");
-        self::$boxTable['mvhd'] = new \ReflectionClass("\Isolator\Boxes\Mvhd");
+        self::$boxTable[self::FREE] = new \ReflectionClass("\Isolator\Boxes\Free");
+        self::$boxTable[self::FTYP] = new \ReflectionClass("\Isolator\Boxes\Ftyp");
+        self::$boxTable[self::MDAT] = new \ReflectionClass("\Isolator\Boxes\Mdat");
+        self::$boxTable[self::MOOV] = new \ReflectionClass("\Isolator\Boxes\Moov");
+        self::$boxTable[self::MVHD] = new \ReflectionClass("\Isolator\Boxes\Mvhd");
+        self::$boxTable[self::TRAK] = new \ReflectionClass("\Isolator\Boxes\Trak");
         
     }
 
@@ -57,6 +59,7 @@ abstract class Box {
     public abstract function loadData();
 
     public function displayBoxMap(){
+        
         $levelPadding = "";
         
         for($i = 0; $i < $this->getDepth(); $i++){
@@ -73,7 +76,11 @@ abstract class Box {
        
     }
 
-    public abstract function displayDetailedBoxMap();
+    public function displayDetailedBoxMap(){
+        
+        $this->displayBoxMap();
+        
+    }
     
     protected function getDepth(){
         

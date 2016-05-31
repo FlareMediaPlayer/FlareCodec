@@ -19,6 +19,7 @@ class Moov extends \Isolator\Box {
         $headerLength = 8;
         $internalOffset = $this->offset + $headerLength;
 
+
         do {
             //Set the offset 
             
@@ -36,7 +37,7 @@ class Moov extends \Isolator\Box {
                 $newBox->container = $this;
                 $newBox->setSize($boxSize);
                 $newBox->setOffset($internalOffset);
-               // $newBox->loadData();
+                $newBox->loadData();
                 $this->boxMap[] = $newBox;
                 
             }
@@ -44,13 +45,10 @@ class Moov extends \Isolator\Box {
 
 
             $internalOffset += $boxSize;
-        } while ($internalOffset < $this->size);
+        } while (($internalOffset - $this->offset ) < $this->size);
         
 
     }
 
-    public function displayDetailedBoxMap() {
-        
-    }
 
 }

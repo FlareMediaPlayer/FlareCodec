@@ -23,8 +23,5 @@ class Mvhd extends \Isolator\Box {
         
     }
 
-    public function displayDetailedBoxMap(){
-        
-    }
 
 }

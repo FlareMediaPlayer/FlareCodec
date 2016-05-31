@@ -3,18 +3,19 @@
 namespace Isolator\Boxes;
 
 /**
- * Description of FREE
+ * Description of Mvhd
  *
- * @author mac
+ * @author Brian Parra
  */
-class Free extends \Isolator\Box {
+class Trak extends \Isolator\Box {
     
     
 
     function __construct($file) {
         
-        $this->boxType = \Isolator\Box::FREE;
+        $this->boxType = \Isolator\Box::TRAK;
         parent::__construct($file);
+  
         
     }
     

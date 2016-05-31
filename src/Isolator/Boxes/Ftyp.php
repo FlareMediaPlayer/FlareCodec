@@ -15,11 +15,44 @@ namespace Isolator\Boxes;
  */
 class Ftyp extends \Isolator\Box {
     
-    const BoxType = \Isolator\Box::FTYP;
+    private $majorBrand;
+    
+    private $minorVersion;
+    
+    private $compatibleBrands;
 
     function __construct($file) {
-
+        $this->boxType = \Isolator\Box::FTYP;
+        $this->compatibleBrands = [];
         parent::__construct($file);
+        
+    }
+    
+    public function loadData() {
+        
+    }
+    
+    public function getMajorBrand(){
+        
+        $this->majorBrand;
+        
+    }
+    
+    public function getMinorVersion(){
+     
+        $this->minorVersion;
+        
     }
 
+    public function getCompatibleBrands(){
+        
+        
+        return $this->compatibleBrands;
+        
+    }
+
+
+    public function displayDetailedBoxMap(){
+        
+    }
 }

@@ -9,11 +9,20 @@ namespace Isolator\Boxes;
  */
 class Free extends \Isolator\Box {
     
-    const BoxType = \Isolator\Box::FREE;
+    
 
     function __construct($file) {
-
+        
+        $this->boxType = \Isolator\Box::FREE;
         parent::__construct($file);
+        
+    }
+    
+    public function loadData() {
+        
+    }
+
+    public function displayDetailedBoxMap(){
         
     }
 

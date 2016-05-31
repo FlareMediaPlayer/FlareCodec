@@ -15,7 +15,27 @@ abstract class Box {
     const MOOV = "moov";
     const MVHD = "mvhd";
     const TRAK = "trak";
-
+    const TKHD = "tkhd";
+    const MDIA = "mdia";
+    const MDHD = "mdhd";
+    const HDLR = "hdlr";
+    const SOUN = "soun";
+    const MINF = "minf";
+    const SMHD = "smhd";
+    const DINF = "dinf";
+    const DREF = "dref";
+    const URL = "url ";
+    const STBL = "stbl";
+    const STSD = "stsd";
+    const EDSD = "edsd";
+    const STTS = "stts";
+    const STSC = "stsc";
+    const STSZ = "stsz";
+    const STCO = "stco";
+    const MP4A = "mp4a";
+    const EDTS = "edts";
+    const ELST = "elst";
+    
     
     public static $boxTable = [];
     protected $offset;
@@ -38,6 +58,7 @@ abstract class Box {
         self::$boxTable[self::MOOV] = new \ReflectionClass("\Isolator\Boxes\Moov");
         self::$boxTable[self::MVHD] = new \ReflectionClass("\Isolator\Boxes\Mvhd");
         self::$boxTable[self::TRAK] = new \ReflectionClass("\Isolator\Boxes\Trak");
+        self::$boxTable[self::TKHD] = new \ReflectionClass("\Isolator\Boxes\Tkhd");
         
     }
 
@@ -60,17 +81,19 @@ abstract class Box {
 
     public function displayBoxMap(){
         
-        $levelPadding = "";
+        $levelPadding;
         
         for($i = 0; $i < $this->getDepth(); $i++){
             $levelPadding.= "--";
         }
         echo $levelPadding . ">";
-        echo $this->boxType . PHP_EOL;
+        echo $this->boxType;
         
         foreach ($this->boxMap as $box) {
             
+            echo "<div>";
             $box->displayBoxMap();
+            echo "</div>";
         
         }
        

@@ -26,15 +26,13 @@ class Iso {
 
     public function displayBoxMap() {
         
-        echo "<pre>" . PHP_EOL;
-        echo ">";
-        echo basename($this->filename) . PHP_EOL;
+ 
+        echo "<h1>>" . basename($this->filename) . "</h1>";
         foreach ($this->boxMap as $box) {
-          
+            echo "<div>";
             $box->displayBoxMap();
-            
+            echo "</div>";
         }
-        echo "</pre>";
         
     }
 

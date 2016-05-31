@@ -16,6 +16,7 @@ class Moov extends \Isolator\Box {
     }
 
     public function loadData() {
+        
         $headerLength = 8;
         $internalOffset = $this->offset + $headerLength;
 

@@ -10,6 +10,7 @@ namespace Isolator;
 abstract class Box {
 
     const FREE = "free";
+    const PDIN = "pdin";
     const FTYP = "ftyp";
     const MDAT = "mdat";
     const MOOV = "moov";
@@ -27,7 +28,6 @@ abstract class Box {
     const URL = "url ";
     const STBL = "stbl";
     const STSD = "stsd";
-    const EDSD = "edsd";
     const STTS = "stts";
     const STSC = "stsc";
     const STSZ = "stsz";
@@ -35,6 +35,15 @@ abstract class Box {
     const MP4A = "mp4a";
     const EDTS = "edts";
     const ELST = "elst";
+    const MOOF = "moof";
+    const MFRA = "mfra";
+    const SKIP = "skip";
+    const META = "meta";
+    const MECO = "meco";
+    const STYP = "styp";
+    const SIDX = "sidx";
+    const SSIX = "ssix";
+    const PRFT = "prft";
     
     
     public static $boxTable = [];
@@ -67,16 +76,25 @@ abstract class Box {
         self::$boxTable[self::DINF] = new \ReflectionClass("\Isolator\Boxes\Dinf");
         self::$boxTable[self::DREF] = new \ReflectionClass("\Isolator\Boxes\Dref");
         //self::$boxTable[self::URL] = new \ReflectionClass("\Isolator\Boxes\Url");
-        //self::$boxTable[self::STBL] = new \ReflectionClass("\Isolator\Boxes\Stbl");
-        //self::$boxTable[self::ETSD] = new \ReflectionClass("\Isolator\Boxes\Etsd");
-        //self::$boxTable[self::EDSD] = new \ReflectionClass("\Isolator\Boxes\Edsd");
-        //self::$boxTable[self::STTS] = new \ReflectionClass("\Isolator\Boxes\Stts");
-        //self::$boxTable[self::STSC] = new \ReflectionClass("\Isolator\Boxes\Stsc");
-        //self::$boxTable[self::STSZ] = new \ReflectionClass("\Isolator\Boxes\Stsz");
-        //self::$boxTable[self::STCO] = new \ReflectionClass("\Isolator\Boxes\Stco");
+        self::$boxTable[self::STBL] = new \ReflectionClass("\Isolator\Boxes\Stbl");
+        self::$boxTable[self::STSD] = new \ReflectionClass("\Isolator\Boxes\Stsd");
+        self::$boxTable[self::STTS] = new \ReflectionClass("\Isolator\Boxes\Stts");
+        self::$boxTable[self::STSC] = new \ReflectionClass("\Isolator\Boxes\Stsc");
+        self::$boxTable[self::STSZ] = new \ReflectionClass("\Isolator\Boxes\Stsz");
+        self::$boxTable[self::STCO] = new \ReflectionClass("\Isolator\Boxes\Stco");
         //self::$boxTable[self::MP4A] = new \ReflectionClass("\Isolator\Boxes\Mp4a");
-        //self::$boxTable[self::EDTS] = new \ReflectionClass("\Isolator\Boxes\Edts");
-        //self::$boxTable[self::ELST] = new \ReflectionClass("\Isolator\Boxes\Elst");
+        self::$boxTable[self::EDTS] = new \ReflectionClass("\Isolator\Boxes\Edts");
+        self::$boxTable[self::ELST] = new \ReflectionClass("\Isolator\Boxes\Elst");
+        self::$boxTable[self::PDIN] = new \ReflectionClass("\Isolator\Boxes\Pdin");
+        self::$boxTable[self::MOOF] = new \ReflectionClass("\Isolator\Boxes\Moof");
+        self::$boxTable[self::MFRA] = new \ReflectionClass("\Isolator\Boxes\Mfra");
+        self::$boxTable[self::SKIP] = new \ReflectionClass("\Isolator\Boxes\Skip");
+        self::$boxTable[self::META] = new \ReflectionClass("\Isolator\Boxes\Meta");
+        self::$boxTable[self::MECO] = new \ReflectionClass("\Isolator\Boxes\MECO");
+        self::$boxTable[self::STYP] = new \ReflectionClass("\Isolator\Boxes\Styp");
+        self::$boxTable[self::SIDX] = new \ReflectionClass("\Isolator\Boxes\Sidx");
+        self::$boxTable[self::SSIX] = new \ReflectionClass("\Isolator\Boxes\Ssix");
+        self::$boxTable[self::PRFT] = new \ReflectionClass("\Isolator\Boxes\Prft");
         
         
     }

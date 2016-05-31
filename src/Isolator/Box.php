@@ -64,8 +64,8 @@ abstract class Box {
         self::$boxTable[self::HDLR] = new \ReflectionClass("\Isolator\Boxes\Hdlr");
         self::$boxTable[self::MINF] = new \ReflectionClass("\Isolator\Boxes\Minf");
         self::$boxTable[self::SMHD] = new \ReflectionClass("\Isolator\Boxes\Smhd");
-        //self::$boxTable[self::DINF] = new \ReflectionClass("\Isolator\Boxes\Dinf");
-        //self::$boxTable[self::DREF] = new \ReflectionClass("\Isolator\Boxes\Dref");
+        self::$boxTable[self::DINF] = new \ReflectionClass("\Isolator\Boxes\Dinf");
+        self::$boxTable[self::DREF] = new \ReflectionClass("\Isolator\Boxes\Dref");
         //self::$boxTable[self::URL] = new \ReflectionClass("\Isolator\Boxes\Url");
         //self::$boxTable[self::STBL] = new \ReflectionClass("\Isolator\Boxes\Stbl");
         //self::$boxTable[self::ETSD] = new \ReflectionClass("\Isolator\Boxes\Etsd");

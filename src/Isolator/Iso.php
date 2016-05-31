@@ -22,7 +22,6 @@ class Iso {
         $this->boxMap = [];
         $this->loadData();
         var_dump($this->boxMap);
-
         
     }
 
@@ -42,7 +41,9 @@ class Iso {
             
 
             if (array_key_exists($boxType, Box::$boxTable)) {
-                $this->boxMap[] = Box::$boxTable[$boxType]->newInstance();
+                
+                $this->boxMap[] = Box::$boxTable[$boxType]->newInstance($this->file);
+                
             }
 
             

@@ -5,6 +5,6 @@ namespace Isolator;
  *
  * @author Brian Parra
  */
-abstract class FullBox extends box {
+abstract class FullBox extends \Isolator\Box {
     //put your code here
 }

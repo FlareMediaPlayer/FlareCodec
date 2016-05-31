@@ -63,7 +63,7 @@ abstract class Box {
         self::$boxTable[self::MDHD] = new \ReflectionClass("\Isolator\Boxes\Mdhd");
         self::$boxTable[self::HDLR] = new \ReflectionClass("\Isolator\Boxes\Hdlr");
         self::$boxTable[self::MINF] = new \ReflectionClass("\Isolator\Boxes\Minf");
-        //self::$boxTable[self::SMHD] = new \ReflectionClass("\Isolator\Boxes\Smhd");
+        self::$boxTable[self::SMHD] = new \ReflectionClass("\Isolator\Boxes\Smhd");
         //self::$boxTable[self::DINF] = new \ReflectionClass("\Isolator\Boxes\Dinf");
         //self::$boxTable[self::DREF] = new \ReflectionClass("\Isolator\Boxes\Dref");
         //self::$boxTable[self::URL] = new \ReflectionClass("\Isolator\Boxes\Url");

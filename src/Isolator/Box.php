@@ -59,6 +59,8 @@ abstract class Box {
         self::$boxTable[self::MVHD] = new \ReflectionClass("\Isolator\Boxes\Mvhd");
         self::$boxTable[self::TRAK] = new \ReflectionClass("\Isolator\Boxes\Trak");
         self::$boxTable[self::TKHD] = new \ReflectionClass("\Isolator\Boxes\Tkhd");
+        self::$boxTable[self::MDIA] = new \ReflectionClass("\Isolator\Boxes\Mdia");
+        self::$boxTable[self::MDHD] = new \ReflectionClass("\Isolator\Boxes\Mdhd");
         
     }
 

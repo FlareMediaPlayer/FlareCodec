@@ -8,6 +8,7 @@ Currently only tested on mp4. Currently working on extracting all the internal d
 
 Check out the sample output
 
+<pre>
 >sample.mp4
 
 -->ftyp
@@ -49,3 +50,4 @@ Check out the sample output
 ------------>stsc
 ------------>stsz
 ------------>stco
+</pre>

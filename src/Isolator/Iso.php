@@ -59,7 +59,12 @@ class Iso {
 
             if (array_key_exists($boxType, Box::$boxTable)) {
 
-                $this->boxMap[] = Box::$boxTable[$boxType]->newInstance($this->file);
+                $newBox=Box::$boxTable[$boxType]->newInstance($this->file);
+                $newBox->setSize($boxSize);
+                $newBox->setOffset($offset);
+                $newBox->loadData();
+                $this->boxMap[] = $newBox;
+                
             }
 
 

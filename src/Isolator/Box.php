@@ -11,6 +11,9 @@ abstract class Box {
 
     const FREE = "free";
     const FTYP = "ftyp";
+    const MDAT = "mdat";
+    const MOOV = "moov";
+    const MVHD = "mvhd";
 
     
     public static $boxTable = [];
@@ -18,11 +21,11 @@ abstract class Box {
     protected $size;
     protected $file;
     protected $container;
-    protected $boxmap;
+    protected $boxMap;
     protected $boxType;
             
     function __construct($file) {
-        $this->boxmap = [];
+        $this->boxMap = [];
         $this->file = $file;
     }
 
@@ -30,6 +33,10 @@ abstract class Box {
 
         self::$boxTable['free'] = new \ReflectionClass("\Isolator\Boxes\Free");
         self::$boxTable['ftyp'] = new \ReflectionClass("\Isolator\Boxes\Ftyp");
+        self::$boxTable['mdat'] = new \ReflectionClass("\Isolator\Boxes\Mdat");
+        self::$boxTable['moov'] = new \ReflectionClass("\Isolator\Boxes\Moov");
+        self::$boxTable['mvhd'] = new \ReflectionClass("\Isolator\Boxes\Mvhd");
+        
     }
 
     public function setOffset($offset) {
@@ -73,7 +80,7 @@ abstract class Box {
         if($this->container == null){
             return 1;
         }else{
-            return 1 + $this->container.getDepth();
+            return 1 + $this->container->getDepth();
         }
         
     }

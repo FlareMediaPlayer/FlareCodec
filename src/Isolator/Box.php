@@ -88,6 +88,10 @@ abstract class Box {
     const FIRE = "fire";
     const FPAR = "fpar";
     const FECR = "fecr";
+    const VMHD = "vmhd";
+    const HMHD = "hmhd";
+    const STHD = "sthd";
+    const NMHD = "nmhd";
 
 
     
@@ -184,6 +188,10 @@ abstract class Box {
         self::$boxTable[self::FIRE] = new \ReflectionClass("\Isolator\Boxes\Fire");
         self::$boxTable[self::FPAR] = new \ReflectionClass("\Isolator\Boxes\Fpar");
         self::$boxTable[self::FECR] = new \ReflectionClass("\Isolator\Boxes\Fecr");
+        self::$boxTable[self::VMHD] = new \ReflectionClass("\Isolator\Boxes\Vmhd");
+        self::$boxTable[self::HMHD] = new \ReflectionClass("\Isolator\Boxes\Hmhd");
+        self::$boxTable[self::STHD] = new \ReflectionClass("\Isolator\Boxes\Sthd");
+        self::$boxTable[self::NMHD] = new \ReflectionClass("\Isolator\Boxes\Nmhd");
         
 
     }

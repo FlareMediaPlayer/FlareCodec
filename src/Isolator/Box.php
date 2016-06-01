@@ -44,6 +44,23 @@ abstract class Box {
     const SIDX = "sidx";
     const SSIX = "ssix";
     const PRFT = "prft";
+    const MVEX = "mvex";
+    const MFHD = "mfhd";
+    const TRAF = "traf";
+    const TFRA = "tfra";
+    const MFRO = "mfro";
+    const UDTA = "udta";
+    const ILOC = "iloc";
+    const IPRO = "ipro";
+    const IINF = "iinf";
+    const XML = "xml ";
+    const BXML = "bxml";
+    const PITM = "pitm";
+    const FIIN = "fiin";
+    const IDAT = "idat";
+    const IREF = "iref";
+    const MERE = "mere";
+ 
     
     
     public static $boxTable = [];
@@ -95,6 +112,25 @@ abstract class Box {
         self::$boxTable[self::SIDX] = new \ReflectionClass("\Isolator\Boxes\Sidx");
         self::$boxTable[self::SSIX] = new \ReflectionClass("\Isolator\Boxes\Ssix");
         self::$boxTable[self::PRFT] = new \ReflectionClass("\Isolator\Boxes\Prft");
+        self::$boxTable[self::MVEX] = new \ReflectionClass("\Isolator\Boxes\Mvex");
+        self::$boxTable[self::MFHD] = new \ReflectionClass("\Isolator\Boxes\Mfhd");
+        self::$boxTable[self::TRAF] = new \ReflectionClass("\Isolator\Boxes\Traf");
+        self::$boxTable[self::TFRA] = new \ReflectionClass("\Isolator\Boxes\Tfra");
+        self::$boxTable[self::MFRO] = new \ReflectionClass("\Isolator\Boxes\Mfro");
+        self::$boxTable[self::UDTA] = new \ReflectionClass("\Isolator\Boxes\Udta");
+        self::$boxTable[self::ILOC] = new \ReflectionClass("\Isolator\Boxes\Iloc");
+        self::$boxTable[self::IPRO] = new \ReflectionClass("\Isolator\Boxes\Ipro");
+        self::$boxTable[self::IINF] = new \ReflectionClass("\Isolator\Boxes\Iinf");
+        self::$boxTable[self::XML] = new \ReflectionClass("\Isolator\Boxes\Xml");
+        self::$boxTable[self::BXML] = new \ReflectionClass("\Isolator\Boxes\Bxml");
+        self::$boxTable[self::PITM] = new \ReflectionClass("\Isolator\Boxes\Pitm");
+        self::$boxTable[self::FIIN] = new \ReflectionClass("\Isolator\Boxes\Fiin");
+        self::$boxTable[self::IDAT] = new \ReflectionClass("\Isolator\Boxes\Idat");
+        self::$boxTable[self::IREF] = new \ReflectionClass("\Isolator\Boxes\Iref");
+        self::$boxTable[self::MERE] = new \ReflectionClass("\Isolator\Boxes\Mere");
+        
+        
+
         
         
     }

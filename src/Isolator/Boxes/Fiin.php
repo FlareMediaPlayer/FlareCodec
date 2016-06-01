@@ -6,13 +6,13 @@ namespace Isolator\Boxes;
  * Primary Item Reference
  * @author Brian Parra
  */
-class Pitm extends \Isolator\Box {
+class Fiin extends \Isolator\Box {
     
     
 
     function __construct($file) {
         
-        $this->boxType = \Isolator\Box::PITM;
+        $this->boxType = \Isolator\Box::FIIN;
         parent::__construct($file);
         
     }

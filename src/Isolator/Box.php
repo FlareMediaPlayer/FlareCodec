@@ -79,7 +79,17 @@ abstract class Box {
     const PAEN = "paen";
     const SEGR = "segr";
     const GITN = "gitn";
- 
+    const ELNG = "elng";
+    const STRI = "stri";
+    const STRD = "strd";
+    const FRMA = "frma";
+    const SCHM = "schm";
+    const SCHI = "schi";
+    const FIRE = "fire";
+    const FPAR = "fpar";
+    const FECR = "fecr";
+
+
     
     
     public static $boxTable = [];
@@ -165,13 +175,17 @@ abstract class Box {
         self::$boxTable[self::PAEN] = new \ReflectionClass("\Isolator\Boxes\Paen");
         self::$boxTable[self::SEGR] = new \ReflectionClass("\Isolator\Boxes\Segr");
         self::$boxTable[self::GITN] = new \ReflectionClass("\Isolator\Boxes\Gitn");
-        
-        
-        
+        self::$boxTable[self::ELNG] = new \ReflectionClass("\Isolator\Boxes\Elng");
+        self::$boxTable[self::STRI] = new \ReflectionClass("\Isolator\Boxes\Stri");
+        self::$boxTable[self::STRD] = new \ReflectionClass("\Isolator\Boxes\Strd");
+        self::$boxTable[self::FRMA] = new \ReflectionClass("\Isolator\Boxes\Frma");
+        self::$boxTable[self::SCHM] = new \ReflectionClass("\Isolator\Boxes\Schm");
+        self::$boxTable[self::SCHI] = new \ReflectionClass("\Isolator\Boxes\Schi");
+        self::$boxTable[self::FIRE] = new \ReflectionClass("\Isolator\Boxes\Fire");
+        self::$boxTable[self::FPAR] = new \ReflectionClass("\Isolator\Boxes\Fpar");
+        self::$boxTable[self::FECR] = new \ReflectionClass("\Isolator\Boxes\Fecr");
         
 
-        
-        
     }
     
 

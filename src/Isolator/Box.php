@@ -60,6 +60,25 @@ abstract class Box {
     const IDAT = "idat";
     const IREF = "iref";
     const MERE = "mere";
+    const TREF = "tref";
+    const TRGR = "trgr";
+    const MEHD = "mehd";
+    const LEVA = "leva";
+    const TFHD = "tfhd";
+    const TRUN = "trun";
+    const SBGP = "sbgp";
+    const SGPD = "sgpd";
+    const SUBS = "subs";
+    const SAIZ = "saiz";
+    const SAIO = "saio";
+    const TFDT = "tfdt";
+    const CPRT = "cprt";
+    const TSEL = "tsel";
+    const STRK = "strk";
+    const SINF = "sinf";
+    const PAEN = "paen";
+    const SEGR = "segr";
+    const GITN = "gitn";
  
     
     
@@ -128,16 +147,43 @@ abstract class Box {
         self::$boxTable[self::IDAT] = new \ReflectionClass("\Isolator\Boxes\Idat");
         self::$boxTable[self::IREF] = new \ReflectionClass("\Isolator\Boxes\Iref");
         self::$boxTable[self::MERE] = new \ReflectionClass("\Isolator\Boxes\Mere");
+        self::$boxTable[self::TREF] = new \ReflectionClass("\Isolator\Boxes\Tref");
+        self::$boxTable[self::TRGR] = new \ReflectionClass("\Isolator\Boxes\Trgr");
+        self::$boxTable[self::MEHD] = new \ReflectionClass("\Isolator\Boxes\Mehd");
+        self::$boxTable[self::LEVA] = new \ReflectionClass("\Isolator\Boxes\Leva");
+        self::$boxTable[self::TFHD] = new \ReflectionClass("\Isolator\Boxes\Tfhd");
+        self::$boxTable[self::TRUN] = new \ReflectionClass("\Isolator\Boxes\Trun");
+        self::$boxTable[self::SBGP] = new \ReflectionClass("\Isolator\Boxes\Sbgp");
+        self::$boxTable[self::SUBS] = new \ReflectionClass("\Isolator\Boxes\Subs");
+        self::$boxTable[self::SAIZ] = new \ReflectionClass("\Isolator\Boxes\Saiz");
+        self::$boxTable[self::SAIO] = new \ReflectionClass("\Isolator\Boxes\Saio");
+        self::$boxTable[self::TFDT] = new \ReflectionClass("\Isolator\Boxes\Tfdt");
+        self::$boxTable[self::CPRT] = new \ReflectionClass("\Isolator\Boxes\Cprt");
+        self::$boxTable[self::TSEL] = new \ReflectionClass("\Isolator\Boxes\Tsel");
+        self::$boxTable[self::STRK] = new \ReflectionClass("\Isolator\Boxes\Strk");
+        self::$boxTable[self::SINF] = new \ReflectionClass("\Isolator\Boxes\Sinf");
+        self::$boxTable[self::PAEN] = new \ReflectionClass("\Isolator\Boxes\Paen");
+        self::$boxTable[self::SEGR] = new \ReflectionClass("\Isolator\Boxes\Segr");
+        self::$boxTable[self::GITN] = new \ReflectionClass("\Isolator\Boxes\Gitn");
+        
+        
         
         
 
         
         
     }
+    
 
     public function setOffset($offset) {
 
         $this->offset = $offset;
+    }
+    
+    public function getOffset(){
+        
+        return $this->offset;
+                
     }
 
     public function setSize($size) {

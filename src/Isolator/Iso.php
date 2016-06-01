@@ -24,8 +24,7 @@ class Iso {
         //var_dump($this->boxMap);
     }
 
-    public function displayBoxMap() {
-        
+    public function displayBoxMap() {      
  
         echo "<h1>>" . basename($this->filename) . "</h1>";
         foreach ($this->boxMap as $box) {

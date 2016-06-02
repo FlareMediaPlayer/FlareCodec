@@ -242,10 +242,11 @@ abstract class Box {
 
     public abstract function loadData();
 
-    public function displayBoxMap(){
+
+    public function displaySimpleBoxMap(){
         
-        $levelPadding;
-        
+    
+        echo "<div>";
         for($i = 0; $i < $this->getDepth(); $i++){
             $levelPadding.= "--";
         }
@@ -255,16 +256,17 @@ abstract class Box {
         foreach ($this->boxMap as $box) {
             
             echo "<div>";
-            $box->displayBoxMap();
+            $box->displaySimpleBoxMap();
             echo "</div>";
         
         }
-       
+    
+        
     }
 
-    public function displayDetailedBoxMap(){
+    private function displayDetailedBoxMap(){
         
-        $this->displayBoxMap();
+        $this->displaySimpleBoxMap();
         
     }
     

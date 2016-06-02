@@ -92,6 +92,17 @@ abstract class Box {
     const HMHD = "hmhd";
     const STHD = "sthd";
     const NMHD = "nmhd";
+    const CTTS = "ctts";
+    const CSLG = "cslg";
+    const STZ2 = "stz2";
+    const CO64 = "co64";
+    const STSS = "stss";
+    const STSH = "stsh";
+    const PADB = "padb";
+    const STDP = "stdp";
+    const SDTP = "sdtp";
+
+   
 
 
     
@@ -192,7 +203,18 @@ abstract class Box {
         self::$boxTable[self::HMHD] = new \ReflectionClass("\Isolator\Boxes\Hmhd");
         self::$boxTable[self::STHD] = new \ReflectionClass("\Isolator\Boxes\Sthd");
         self::$boxTable[self::NMHD] = new \ReflectionClass("\Isolator\Boxes\Nmhd");
-        
+        self::$boxTable[self::CTTS] = new \ReflectionClass("\Isolator\Boxes\Ctts");
+        self::$boxTable[self::CSLG] = new \ReflectionClass("\Isolator\Boxes\Cslg");
+        self::$boxTable[self::STZ2] = new \ReflectionClass("\Isolator\Boxes\Stz2");
+        self::$boxTable[self::CO64] = new \ReflectionClass("\Isolator\Boxes\Co64");
+        self::$boxTable[self::STSS] = new \ReflectionClass("\Isolator\Boxes\Stss");
+        self::$boxTable[self::STSH] = new \ReflectionClass("\Isolator\Boxes\Stsh");
+        self::$boxTable[self::PADB] = new \ReflectionClass("\Isolator\Boxes\Padb");
+        self::$boxTable[self::STDP] = new \ReflectionClass("\Isolator\Boxes\Stdp");
+        self::$boxTable[self::SDTP] = new \ReflectionClass("\Isolator\Boxes\Sdtp");
+        self::$boxTable[self::SGPD] = new \ReflectionClass("\Isolator\Boxes\SGPD");
+     
+
 
     }
     

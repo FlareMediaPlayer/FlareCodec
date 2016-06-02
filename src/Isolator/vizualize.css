@@ -1,0 +1,37 @@
+/* 
+    Created on : Jun 1, 2016, 10:12:30 PM
+    Author     : mac
+*/
+
+.isolator_iso_container{
+    padding: 10px;
+    background-color: grey;
+}
+
+.isolator_iso_container div{
+    padding: 10px 0 10px 10px;
+}
+
+.isolator_box_depth_1{
+    background-color: red;
+}
+
+.isolator_box_depth_2{
+    background-color: green;
+}
+
+.isolator_box_depth_3{
+    background-color: blue;
+}
+
+.isolator_box_depth_4{
+    background-color:white;
+}
+
+.isolator_box_depth_5{
+    background-color:yellowgreen;
+}
+
+.isolator_box_depth_6{
+    background-color:purple;
+}

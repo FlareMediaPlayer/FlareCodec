@@ -9,6 +9,9 @@ namespace Isolator;
  */
 abstract class Box {
 
+    //Extended Type
+    const UUID = "uuid";
+    //Standard Part 12 Box types
     const FREE = "free";
     const PDIN = "pdin";
     const FTYP = "ftyp";
@@ -102,11 +105,6 @@ abstract class Box {
     const STDP = "stdp";
     const SDTP = "sdtp";
 
-   
-
-
-    
-    
     public static $boxTable = [];
     protected $offset;
     protected $size;
@@ -114,7 +112,12 @@ abstract class Box {
     protected $container;
     protected $boxMap;
     protected $boxType;
-            
+    protected $iso;
+    protected $extendedType;
+    protected $headerSize;
+    protected $toEOF = false;
+    protected $largeSize = false;
+
     function __construct($file) {
         $this->boxMap = [];
         $this->file = $file;
@@ -213,21 +216,16 @@ abstract class Box {
         self::$boxTable[self::STDP] = new \ReflectionClass("\Isolator\Boxes\Stdp");
         self::$boxTable[self::SDTP] = new \ReflectionClass("\Isolator\Boxes\Sdtp");
         self::$boxTable[self::SGPD] = new \ReflectionClass("\Isolator\Boxes\SGPD");
-     
-
-
     }
-    
 
     public function setOffset($offset) {
 
         $this->offset = $offset;
     }
-    
-    public function getOffset(){
-        
+
+    public function getOffset() {
+
         return $this->offset;
-                
     }
 
     public function setSize($size) {
@@ -242,44 +240,96 @@ abstract class Box {
 
     public abstract function loadData();
 
+    public function displayBoxMap() {
 
-    public function displaySimpleBoxMap(){
-        
-    
         echo "<div>";
-        for($i = 0; $i < $this->getDepth(); $i++){
+        for ($i = 0; $i < $this->getDepth(); $i++) {
             $levelPadding.= "--";
         }
         echo $levelPadding . ">";
         echo $this->boxType;
-        
+
         foreach ($this->boxMap as $box) {
-            
+
             echo "<div>";
-            $box->displaySimpleBoxMap();
+            $box->displayDetailedBoxMap();
             echo "</div>";
-        
         }
-    
-        
     }
 
-    private function displayDetailedBoxMap(){
-        
-        $this->displaySimpleBoxMap();
-        
+    public function displayDetailedBoxMap() {
+
+        $this->displayBoxMap();
     }
     
-    protected function getDepth(){
-        
-        if($this->container == null){
+    public function getBoxType(){
+        return $this->boxType;
+    }
+    
+    public function getBoxMap(){
+        return $this->boxMap;
+    }
+    
+    public function getBoxDetails(){
+        return null;
+    }
+
+    public function getDepth() {
+
+        if ($this->container == null) {
             return 1;
-        }else{
+        } else {
             return 1 + $this->container->getDepth();
         }
-        
     }
-    
+
+    public function getSize() {
+
+        return $this->size;
+    }
+
+    public function setLargeSize($isLarge) {
+        $this->largeSize = true;
+    }
+
+    public function addBox($box) {
+        $this->boxMap[] = $box;
+    }
+
+    public static function parseBox($file, $offset, $container) {
+        $newBox;
+        fseek($file, $offset);
+        //Get Size
+        $boxSize = ByteUtils::readUnsingedInteger($file);
+        $boxType = ByteUtils::readBoxType($file);
+
+        if ($boxSize == 1) {
+
+            $boxSize = ByteUtils::readUnsingedLong($file);
+            $newBox->setLargeSize(true);
+        }
+        if ($boxSize == 0)
+            $toEOF = true;
+        //UUID's not yet supported, skip for now
+        //if($boxType == \Isolator\Box::UUID) \Isolator\ByteUtils::skipBytes ($file, 16);
+        //Check if Valid addition
+
+        if (array_key_exists($boxType, Box::$boxTable)) {
+
+            $newBox = Box::$boxTable[$boxType]->newInstance($file);
+            $newBox->setSize($boxSize);
+            $newBox->setOffset($offset);
+            //just use a flag to set if using 64bit size to avoid doing more tests later
+            //Add container
+
+            $container->addBox($newBox);
+            //If Legit, load data
+            $newBox->loadData();
+        }
+
+        return $newBox;
+    }
+
 }
 
 Box::__init__();

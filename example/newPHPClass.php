@@ -8,7 +8,7 @@
 require_once '../src/Isolator/AutoLoader.php';
 
 
-//$iso = new  Isolator\Iso("sample.mp4");
+$iso = new  Isolator\Iso("sample.mp4");
 //$iso->displayBoxMap();
-Isolator\Iso::quickMap("sample.mp4", TRUE);
+Isolator\IsoVisualizer::visualize($iso);
 

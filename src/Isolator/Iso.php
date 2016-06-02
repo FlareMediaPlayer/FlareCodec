@@ -9,6 +9,8 @@ namespace Isolator;
  */
 class Iso {
 
+
+
     private $filename;
     private $file;
     private $fileSize;
@@ -24,14 +26,23 @@ class Iso {
         //var_dump($this->boxMap);
     }
 
+    public function getFileName(){
+        return $this->filename;
+    }
 
-    public function displaySimpleBoxMap() {
+    public function getBoxMap(){
+        return $this->boxMap;
+    }
+    
+    
+    public function displayBoxMap() {
         
         echo "<div>";
         echo "<h1>>" . basename($this->filename) . "</h1>";
         foreach ($this->boxMap as $box) {
             echo "<div>";
-            $box->displaySimpleBoxMap();
+            $box->displayBoxMap();
+            echo "box";
             echo "</div>";
         }
         echo "</div>";
@@ -39,8 +50,15 @@ class Iso {
     }
 
     public function displayDetailedBoxMap() {
-        
-        $this->displaySimpleBoxMap();
+      
+        echo "<div>";
+        echo "<h1>>" . basename($this->filename) . "</h1>";
+        foreach ($this->boxMap as $box) {
+            echo "<div>";
+            $box->displayDetailedBoxMap();
+            echo "</div>";
+        }
+        echo "</div>";
         
     }
 
@@ -50,44 +68,29 @@ class Iso {
         $boxSize;
         $boxType;
         $dataBuffer;
+        $newBox;
 
         do {
             //Set the offset 
-            fseek($this->file, $offset);
+            //fseek($this->file, $offset);
 
-            $boxSize = ByteUtils::readUnsingedInteger($this->file);
-            $boxType = ByteUtils::readBoxType($this->file);
+            //$boxSize = ByteUtils::readUnsingedInteger($this->file);
+            //$boxType = ByteUtils::readBoxType($this->file);
+            
 
+                
+            $newBox = \Isolator\Box::parseBox($this->file, $offset, $this);
+                
+   
 
-            if (array_key_exists($boxType, Box::$boxTable)) {
-
-                $newBox = Box::$boxTable[$boxType]->newInstance($this->file);
-                $newBox->setSize($boxSize);
-                $newBox->setOffset($offset);
-                $newBox->loadData();
-                $this->boxMap[] = $newBox;
-            }
-
-
-
-            $offset += $boxSize;
+            $offset += $newBox->getSize();
         } while ($offset < $this->fileSize);
     }
 
-    public static function quickMap($filename, $detailed = false) {
-
-        $quick = new Iso($filename);
-        
-        if($detailed){
-            
-            $quick->displayDetailedBoxMap();
-            
-        }else{
-            
-            $quick->displaySimpleBoxMap();
-            
-        }
-  
+    public function addBox($box){
+        $this->boxMap[] = $box;
     }
+    
+
 
 }

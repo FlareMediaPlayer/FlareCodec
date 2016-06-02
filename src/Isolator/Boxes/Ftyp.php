@@ -1,54 +1,110 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Isolator\Boxes;
 
 /**
- * Description of Ftyp
- *
+ * File Type box
+ * Mandatory, and can only have 1.
  * @author mac
  */
 class Ftyp extends \Isolator\Box {
-    
+
+    const ISO_BASE_MEDIA = "isom";
+    const ISO_BASE_MEDIA_2 = "iso2";
+    const ISO_BASE_MEDIA_3 = "iso3";
+    const ISO_BASE_MEDIA_4 = "iso4";
+    const ISO_BASE_MEDIA_5 = "iso5";
+    const ISO_BASE_MEDIA_6 = "iso6";
+    const ISO_BASE_MEDIA_7 = "iso7";
+    const ISO_BASE_MEDIA_8 = "iso8";
+    const ISO_BASE_MEDIA_9 = "iso9";
+    const BRAND_MP4_1 = "mp41";
+    const MP4_2 = "mp42";
+    const MOBILE_MP4 = "mmp4";
+    const QUICKTIME = "qm  ";
+    const AVC = "avc1";
+    const AUDIO = "M4A ";
+    const AUDIO_2 = "M4B ";
+    const AUDIO_ENCRYPTED = "M4P ";
+    const MP7 = "mp71";
+
     private $majorBrand;
-    
     private $minorVersion;
-    
     private $compatibleBrands;
 
     function __construct($file) {
+
         $this->boxType = \Isolator\Box::FTYP;
         $this->compatibleBrands = [];
         parent::__construct($file);
-        
-    }
-    
-    public function loadData() {
-        
-    }
-    
-    public function getMajorBrand(){
-        
-        $this->majorBrand;
-        
-    }
-    
-    public function getMinorVersion(){
-     
-        $this->minorVersion;
-        
     }
 
-    public function getCompatibleBrands(){
+    public function loadData() {
+
+
+
+        if ($this->largeSize) {
+            $this->headerSize = 16; //4 size + 4 type + 8 extended size;
+        } else {
+            $this->headerSize = 8; //4 size + 4 type 
+        }
+
+        //Make sure file pointer is at correct position
+        fseek($this->file, $this->offset + $this->headerSize);
+        $this->majorBrand = \Isolator\ByteUtils::read4Char($this->file);
+        $this->minorBrand = \Isolator\ByteUtils::read4Char($this->file);
+
+
+        while (ftell($this->file) < ($this->size + $this->offset)) {
+            $this->compatibleBrands[] = \Isolator\ByteUtils::read4Char($this->file);
+        }
+    }
+
+    public function getBoxDetails() {
+        $details = [];
+        $details["Major Brand"] = $this->majorBrand;
+        return $details;
+    }
+    public function displayDetailedBoxMap() {
+
+        $levelPadding = "";
+        $levelSpacing = " ";
+
+        echo "<div>";
+        for ($i = 0; $i < $this->getDepth(); $i++) {
+            $levelPadding.= "--";
+            $levelSpacing.= "  ";
+        }
+        echo $levelPadding . ">";
+        echo $this->boxType;
+
+        echo $levelSpacing;
+        echo "<br>". "Major Brand : " . $this->majorBrand;
+
+        foreach ($this->boxMap as $box) {
+
+            echo "<div>";
+            $box->displaySimpleBoxMap();
+            echo "</div>";
+        }
+  
         
-        
+    }
+  
+  public function getMajorBrand() {
+
+        $this->majorBrand;
+    }
+
+    public function getMinorVersion() {
+
+        $this->minorVersion;
+    }
+
+    public function getCompatibleBrands() {
+
+
         return $this->compatibleBrands;
-        
     }
 
 }

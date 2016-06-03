@@ -77,31 +77,7 @@ class Ftyp extends \Isolator\Box {
         return $details;
     }
     
-    public function displayDetailedBoxMap() {
 
-        $levelPadding = "";
-        $levelSpacing = " ";
-
-        echo "<div>";
-        for ($i = 0; $i < $this->getDepth(); $i++) {
-            $levelPadding.= "--";
-            $levelSpacing.= "  ";
-        }
-        echo $levelPadding . ">";
-        echo $this->boxType;
-
-        echo $levelSpacing;
-        echo "<br>". "Major Brand : " . $this->majorBrand;
-
-        foreach ($this->boxMap as $box) {
-
-            echo "<div>";
-            $box->displaySimpleBoxMap();
-            echo "</div>";
-        }
-  
-        
-    }
   
   public function getMajorBrand() {
 

@@ -10,6 +10,9 @@ namespace Isolator\Boxes;
 
 class Skip extends \Isolator\Box {
 
+    private $freeBytes = 0;
+    private $data;
+    
     function __construct($file) {
 
         $this->boxType = \Isolator\Box::SKIP;

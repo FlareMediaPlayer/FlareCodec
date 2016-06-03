@@ -10,6 +10,8 @@ namespace Isolator\Boxes;
 class Free extends \Isolator\Box {
     
     private $freeBytes = 0;
+    private $data;
+
 
     function __construct($file) {
         

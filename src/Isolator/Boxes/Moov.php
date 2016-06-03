@@ -14,8 +14,24 @@ class Moov extends \Isolator\Box {
         $this->boxType = \Isolator\Box::MOOV;
         parent::__construct($file);
     }
+    
+
+    public function getBoxDetails() {
+        
+        $details = [];
+        $details["Size"] = $this->size;
+        $details["Offset"] = $this->offset;
+
+        return $details;
+    }
 
     public function loadData() {
+        
+        if ($this->largeSize) {
+            $this->headerSize = 16; //4 size + 4 type + 8 extended size;
+        } else {
+            $this->headerSize = 8; //4 size + 4 type 
+        }
         
         $headerLength = 8;
         $internalOffset = $this->offset + $headerLength;

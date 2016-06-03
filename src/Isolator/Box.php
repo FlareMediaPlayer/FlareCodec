@@ -295,8 +295,13 @@ abstract class Box {
     public function addBox($box) {
         $this->boxMap[] = $box;
     }
+    
+    protected function parseBox(){
+        
+    }
+    
 
-    public static function parseBox($file, $offset, $container) {
+    public static function parseTopLevelBox($file, $offset, $container) {
         $newBox;
         fseek($file, $offset);
         //Get Size

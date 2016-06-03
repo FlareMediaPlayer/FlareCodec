@@ -6,10 +6,12 @@
 .isolator_iso_container{
     padding: 10px;
     background-color: grey;
+    
 }
 
 .isolator_iso_container div{
     padding: 10px 0 10px 10px;
+    border: 1px solid black;
 }
 
 .isolator_box_depth_1{

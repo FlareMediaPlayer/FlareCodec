@@ -30,12 +30,11 @@ class Ftyp extends \Isolator\Box {
 
     private $majorBrand;
     private $minorVersion;
-    private $compatibleBrands;
+    private $compatibleBrands = [];
 
     function __construct($file) {
 
         $this->boxType = \Isolator\Box::FTYP;
-        $this->compatibleBrands = [];
         parent::__construct($file);
     }
 
@@ -52,7 +51,7 @@ class Ftyp extends \Isolator\Box {
         //Make sure file pointer is at correct position
         fseek($this->file, $this->offset + $this->headerSize);
         $this->majorBrand = \Isolator\ByteUtils::read4Char($this->file);
-        $this->minorBrand = \Isolator\ByteUtils::read4Char($this->file);
+        $this->minorVersion = \Isolator\ByteUtils::readUnsingedInteger($this->file);
 
 
         while (ftell($this->file) < ($this->size + $this->offset)) {
@@ -62,9 +61,22 @@ class Ftyp extends \Isolator\Box {
 
     public function getBoxDetails() {
         $details = [];
+        $details["Size"] = $this->size;
+        $details["Offset"] = $this->offset;
         $details["Major Brand"] = $this->majorBrand;
+        $details["Minor Version"] = $this->minorVersion;
+        
+        if(!empty($this->compatibleBrands)){
+            $details["Compatible Brands"] = [];
+           foreach($this->compatibleBrands as $brand){
+               $details["Compatible Brands"][] = $brand;
+           } 
+        }
+    
+         
         return $details;
     }
+    
     public function displayDetailedBoxMap() {
 
         $levelPadding = "";

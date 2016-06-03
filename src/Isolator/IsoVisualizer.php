@@ -31,21 +31,15 @@ class IsoVisualizer {
         
         echo "<div class=\"isolator_box_depth_" . $box->getDepth() .  "\">";
         echo $box->getBoxType();
-        
         $subBoxes = $box->getBoxMap();
         $boxDetails = $box->getBoxDetails();
-        
+        //var_dump($boxDetails);
+      
         if ($boxDetails) {
-            
-            echo "<ul>";
-            foreach ($boxDetails as $key => $detail) {
-
-                echo "<li>" . $key . " : " . $detail . "</li>";
-            }
-            echo "</ul>";
-            
+            static::displayDetails($boxDetails);
         }
 
+       
 
         foreach ($subBoxes as $subBox){
             static::displayBox($subBox);
@@ -54,6 +48,29 @@ class IsoVisualizer {
         
         echo "</div>";
         
+    }
+    
+    public static function displayDetails($details){
+        
+        echo "<ul>";
+            foreach ($details as $key => $detail) {
+                if(is_array($detail)){
+                    echo "<li>" . $key;
+                    static::displayDetails($detail);
+                    echo "</li>";
+                }else{
+                    
+                    if(!is_int($key)){
+                       echo "<li>" . $key . " : " . $detail . "</li>"; 
+                    }else{
+                        echo "<li>" . $detail . "</li>"; 
+                    }
+                    
+                }
+                
+            }
+        echo "</ul>";
+            
     }
     
     

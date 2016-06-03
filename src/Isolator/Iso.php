@@ -79,7 +79,7 @@ class Iso {
             
 
                 
-            $newBox = \Isolator\Box::parseBox($this->file, $offset, $this);
+            $newBox = \Isolator\Box::parseTopLevelBox($this->file, $offset, $this);
                 
    
 

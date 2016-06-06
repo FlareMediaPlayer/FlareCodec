@@ -16,6 +16,7 @@ class Stts extends \Isolator\FullBox {
         
         $this->boxType = \Isolator\Box::STTS;
         parent::__construct($file);
+        //$this->deltaTable = [][];
         
     }
     

@@ -65,4 +65,10 @@ class ByteUtils {
         return $dataBuffer[1]/$x;
     }
     
+    public static function readBytesAsHex($file, $n){
+        $dataBuffer = fread ( $file , $n );
+        $dataBuffer = unpack("H*", $dataBuffer );
+        return $dataBuffer;
+    }
+    
 }

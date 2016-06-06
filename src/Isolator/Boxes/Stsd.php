@@ -7,9 +7,9 @@ namespace Isolator\Boxes;
  *
  * @author Brian Parra
  */
-class Stsd extends \Isolator\Box {
+class Stsd extends \Isolator\FullBox {
     
-    
+    private $entryCount;
 
     function __construct($file) {
         
@@ -19,7 +19,24 @@ class Stsd extends \Isolator\Box {
     }
     
     public function loadData() {
+        $this->readHeader();
+        $this->entryCount = \Isolator\ByteUtils::readUnsingedInteger($this->file);
+    }
+    
+    public function getBoxDetails() {
+
+        $details = [];
+
+        $details["Size"] = $this->size;
+        $details["Offset"] = $this->offset;
+        $details["Version"] = $this->version;
+        $details["Flags"] = $this->flags;
+        $details["Entry Count"] = $this->entryCount;
+
         
+
+
+        return $details;
     }
 
 }

@@ -37,7 +37,6 @@ class Mdhd extends \Isolator\FullBox {
             $this->duration = \Isolator\ByteUtils::readUnsingedInteger($this->file);
         }
         $langTemp = \Isolator\ByteUtils::readBytesAsHex($this->file, 2);
-        var_dump($langTemp);
         
     }
 

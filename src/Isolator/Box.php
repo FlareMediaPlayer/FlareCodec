@@ -154,7 +154,7 @@ abstract class Box {
         self::$boxTable[self::MFRA] = new \ReflectionClass("\Isolator\Boxes\Mfra");
         self::$boxTable[self::SKIP] = new \ReflectionClass("\Isolator\Boxes\Skip");
         self::$boxTable[self::META] = new \ReflectionClass("\Isolator\Boxes\Meta");
-        self::$boxTable[self::MECO] = new \ReflectionClass("\Isolator\Boxes\MECO");
+        self::$boxTable[self::MECO] = new \ReflectionClass("\Isolator\Boxes\Meco");
         self::$boxTable[self::STYP] = new \ReflectionClass("\Isolator\Boxes\Styp");
         self::$boxTable[self::SIDX] = new \ReflectionClass("\Isolator\Boxes\Sidx");
         self::$boxTable[self::SSIX] = new \ReflectionClass("\Isolator\Boxes\Ssix");
@@ -215,7 +215,7 @@ abstract class Box {
         self::$boxTable[self::PADB] = new \ReflectionClass("\Isolator\Boxes\Padb");
         self::$boxTable[self::STDP] = new \ReflectionClass("\Isolator\Boxes\Stdp");
         self::$boxTable[self::SDTP] = new \ReflectionClass("\Isolator\Boxes\Sdtp");
-        self::$boxTable[self::SGPD] = new \ReflectionClass("\Isolator\Boxes\SGPD");
+        self::$boxTable[self::SGPD] = new \ReflectionClass("\Isolator\Boxes\Sgpd");
     }
 
     public function setOffset($offset) {

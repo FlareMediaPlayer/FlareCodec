@@ -71,4 +71,19 @@ class ByteUtils {
         return $dataBuffer;
     }
     
+    public static function readString($file, $chars){
+        if($chars == 0){
+            return null;
+        }
+        $string = "";
+        $dataBuffer = fread ( $file , $chars  );
+        $dataBuffer = unpack("C*", $dataBuffer );
+    
+        for($i = 1; $i<= count($dataBuffer); $i++){
+           // var_dump(chr($dataBuffer[$i]));
+            $string .= chr($dataBuffer[$i]);
+        }
+        return $string;
+    }
+    
 }

@@ -45,11 +45,24 @@ class ByteUtils {
         return $dataBuffer[1];
     }
     
+    public static function readUnsignedShort($file){
+        $dataBuffer = fread ( $file , 2 );
+        $dataBuffer = unpack("n", $dataBuffer );
+        return $dataBuffer[1];
+    }
+    
     public static function skipBytes($file, $num){
         $currentPosition = ftell($file);
         $newPosition = $currentPosition+ $num;
         fseek($file, $newPosition);
     }
     
+    public static function readFixedPoint16_16($file){
+
+        $dataBuffer = fread ( $file , 4 );
+        $dataBuffer = unpack("N", $dataBuffer );
+        $x = pow(2 , 16);
+        return $dataBuffer[1]/$x;
+    }
     
 }

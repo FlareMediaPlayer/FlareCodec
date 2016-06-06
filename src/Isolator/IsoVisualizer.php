@@ -4,7 +4,6 @@ namespace Isolator;
 
 
 class IsoVisualizer {
-
     
     public static function visualize($iso){
         echo "<style>";

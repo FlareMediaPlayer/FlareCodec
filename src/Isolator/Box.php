@@ -346,7 +346,7 @@ abstract class Box {
     public function loadChildBoxes($internalOffset) {
 
         $newBox;
-        $boxSize;
+        $boxSize = 0;
         $boxType;
         while (($internalOffset - $this->offset ) < $this->size) {
             //Set the offset 

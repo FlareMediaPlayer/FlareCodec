@@ -65,6 +65,14 @@ class ByteUtils {
         return $dataBuffer[1]/$x;
     }
     
+    public static function readFixedPoint8_8($file){
+
+        $dataBuffer = fread ( $file , 2 );
+        $dataBuffer = unpack("n", $dataBuffer );
+        $x = pow(2 , 8);
+        return $dataBuffer[1]/$x;
+    }
+    
     public static function readBytesAsHex($file, $n){
         $dataBuffer = fread ( $file , $n );
         $dataBuffer = unpack("H*", $dataBuffer );

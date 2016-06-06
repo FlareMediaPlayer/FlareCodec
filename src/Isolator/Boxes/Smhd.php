@@ -7,9 +7,9 @@ namespace Isolator\Boxes;
  *
  * @author Brian Parra
  */
-class Smhd extends \Isolator\Box {
+class Smhd extends \Isolator\FullBox {
     
-    
+    private $balance;
 
     function __construct($file) {
         
@@ -19,7 +19,23 @@ class Smhd extends \Isolator\Box {
     }
     
     public function loadData() {
-        
+        $this->readHeader();
+        $this->balance = \Isolator\ByteUtils::readFixedPoint8_8($file);
+    }
+    
+        public function getBoxDetails() {
+
+        $details = [];
+
+        $details["Size"] = $this->size;
+        $details["Offset"] = $this->offset;
+        $details["Version"] = $this->version;
+        $details["Flags"] = $this->flags;
+
+        $details["Balance"] = $this->balance;
+
+
+        return $details;
     }
 
 }

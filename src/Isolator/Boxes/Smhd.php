@@ -8,22 +8,21 @@ namespace Isolator\Boxes;
  * @author Brian Parra
  */
 class Smhd extends \Isolator\FullBox {
-    
+
     private $balance;
 
     function __construct($file) {
-        
+
         $this->boxType = \Isolator\Box::SMHD;
         parent::__construct($file);
-        
     }
-    
+
     public function loadData() {
         $this->readHeader();
         $this->balance = \Isolator\ByteUtils::readFixedPoint8_8($file);
     }
-    
-        public function getBoxDetails() {
+
+    public function getBoxDetails() {
 
         $details = [];
 

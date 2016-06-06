@@ -29,6 +29,7 @@ abstract class Box {
     const DINF = "dinf";
     const DREF = "dref";
     const URL = "url ";
+    const URN = "urn ";
     const STBL = "stbl";
     const STSD = "stsd";
     const STTS = "stts";
@@ -139,7 +140,8 @@ abstract class Box {
         self::$boxTable[self::SMHD] = new \ReflectionClass("\Isolator\Boxes\Smhd");
         self::$boxTable[self::DINF] = new \ReflectionClass("\Isolator\Boxes\Dinf");
         self::$boxTable[self::DREF] = new \ReflectionClass("\Isolator\Boxes\Dref");
-        //self::$boxTable[self::URL] = new \ReflectionClass("\Isolator\Boxes\Url");
+        self::$boxTable[self::URL] = new \ReflectionClass("\Isolator\Boxes\Url");
+        self::$boxTable[self::URN] = new \ReflectionClass("\Isolator\Boxes\Urn");
         self::$boxTable[self::STBL] = new \ReflectionClass("\Isolator\Boxes\Stbl");
         self::$boxTable[self::STSD] = new \ReflectionClass("\Isolator\Boxes\Stsd");
         self::$boxTable[self::STTS] = new \ReflectionClass("\Isolator\Boxes\Stts");
@@ -343,15 +345,21 @@ abstract class Box {
         $this->container = $container;
     }
 
-    public function loadChildBoxes($internalOffset) {
-
+    public function loadChildBoxes($internalOffset = null) {
+        
+        if($internalOffset == NULL){
+            $offset = ftell($this->file);
+        }else{
+            $offset = $internalOffset;
+        }
         $newBox;
         $boxSize = 0;
         $boxType;
-        while (($internalOffset - $this->offset ) < $this->size) {
+        
+        while (($offset - $this->offset ) < $this->size) {
             //Set the offset 
 
-            fseek($this->file, $internalOffset);
+            fseek($this->file, $offset);
 
             $boxSize = \Isolator\ByteUtils::readUnsingedInteger($this->file);
             $boxType = \Isolator\ByteUtils::readBoxType($this->file);
@@ -368,7 +376,7 @@ abstract class Box {
 
                 $newBox = \Isolator\Box::$boxTable[$boxType]->newInstance($this->file);
                 $newBox->setSize($boxSize);
-                $newBox->setOffset($internalOffset);
+                $newBox->setOffset($offset);
                 //just use a flag to set if using 64bit size to avoid doing more tests later
                 //Add container
 
@@ -380,7 +388,7 @@ abstract class Box {
 
 
 
-            $internalOffset += $boxSize;
+            $offset += $boxSize;
         }
     }
     

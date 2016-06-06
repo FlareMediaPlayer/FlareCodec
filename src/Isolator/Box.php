@@ -261,17 +261,13 @@ abstract class Box {
 
         $this->displayBoxMap();
     }
-    
-    public function getBoxType(){
+
+    public function getBoxType() {
         return $this->boxType;
     }
-    
-    public function getBoxMap(){
+
+    public function getBoxMap() {
         return $this->boxMap;
-    }
-    
-    public function getBoxDetails(){
-        return null;
     }
 
     public function getDepth() {
@@ -295,11 +291,18 @@ abstract class Box {
     public function addBox($box) {
         $this->boxMap[] = $box;
     }
-    
-    protected function parseBox(){
+
+    protected function parseBox() {
         
     }
-    
+
+    public function getBoxDetails() {
+
+        $details = [];
+        $details["Size"] = $this->size;
+        $details["Offset"] = $this->offset;
+        return $details;
+    }
 
     public static function parseTopLevelBox($file, $offset, $container) {
         $newBox;
@@ -319,6 +322,7 @@ abstract class Box {
         //if($boxType == \Isolator\Box::UUID) \Isolator\ByteUtils::skipBytes ($file, 16);
         //Check if Valid addition
 
+
         if (array_key_exists($boxType, Box::$boxTable)) {
 
             $newBox = Box::$boxTable[$boxType]->newInstance($file);
@@ -333,6 +337,51 @@ abstract class Box {
         }
 
         return $newBox;
+    }
+
+    public function setContainer($container) {
+        $this->container = $container;
+    }
+
+    public function loadChildBoxes($internalOffset) {
+
+        $newBox;
+        $boxSize;
+        $boxType;
+        while (($internalOffset - $this->offset ) < $this->size) {
+            //Set the offset 
+
+            fseek($this->file, $internalOffset);
+
+            $boxSize = \Isolator\ByteUtils::readUnsingedInteger($this->file);
+            $boxType = \Isolator\ByteUtils::readBoxType($this->file);
+
+            if ($boxSize == 1) {
+
+                $boxSize = ByteUtils::readUnsingedLong($file);
+                $newBox->setLargeSize(true);
+            }
+            if ($boxSize == 0)
+                $toEOF = true;
+
+            if (array_key_exists($boxType, \Isolator\Box::$boxTable)) {
+
+                $newBox = \Isolator\Box::$boxTable[$boxType]->newInstance($this->file);
+                $newBox->setSize($boxSize);
+                $newBox->setOffset($internalOffset);
+                //just use a flag to set if using 64bit size to avoid doing more tests later
+                //Add container
+
+                $this->addBox($newBox);
+                $newBox->setContainer($this);
+                //If Legit, load data
+                $newBox->loadData();
+            }
+
+
+
+            $internalOffset += $boxSize;
+        }
     }
 
 }

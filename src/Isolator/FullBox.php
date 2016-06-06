@@ -6,5 +6,16 @@ namespace Isolator;
  * @author Brian Parra
  */
 abstract class FullBox extends \Isolator\Box {
-    //put your code here
+    
+    protected $version; //1 byte
+    protected $flags = []; // 3 bytes 
+    
+    function __construct($file) {
+
+        parent::__construct($file);  
+        
+    }
+    
+
+    
 }

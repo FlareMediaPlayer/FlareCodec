@@ -39,6 +39,12 @@ class ByteUtils {
         return chr($dataBuffer[1]) . chr($dataBuffer[2]) . chr($dataBuffer[3]) . chr($dataBuffer[4]);
     }
     
+    public static function readUnsignedByte($file){
+        $dataBuffer = fread ( $file , 1 );
+        $dataBuffer = unpack("C*", $dataBuffer );
+        return $dataBuffer[1];
+    }
+    
     public static function skipBytes($file, $num){
         $currentPosition = ftell($file);
         $newPosition = $currentPosition+ $num;

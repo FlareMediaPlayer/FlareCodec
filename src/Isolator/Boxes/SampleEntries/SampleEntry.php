@@ -10,6 +10,9 @@ namespace Isolator\Boxes\SampleEntries;
 abstract class SampleEntry extends \Isolator\Box{
 
     protected $dataReferenceIndex;
-
+    
+    function __construct($file) {
+        parent::__construct($file);
+    }
     
 }

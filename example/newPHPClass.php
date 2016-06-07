@@ -9,6 +9,6 @@ require_once '../src/Isolator/AutoLoader.php';
 
 
 $iso = new  Isolator\Iso("sample.mp4");
-//$iso->displayBoxMap();
-//Isolator\IsoVisualizer::visualize($iso);
+
+Isolator\IsoVisualizer::visualize($iso);
 

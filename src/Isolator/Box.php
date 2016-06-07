@@ -36,7 +36,6 @@ abstract class Box {
     const STSC = "stsc";
     const STSZ = "stsz";
     const STCO = "stco";
-    const MP4A = "mp4a";
     const EDTS = "edts";
     const ELST = "elst";
     const MOOF = "moof";
@@ -105,6 +104,10 @@ abstract class Box {
     const PADB = "padb";
     const STDP = "stdp";
     const SDTP = "sdtp";
+    
+    //SAMPLE ENTRIES
+    const ESDS = "esds"; //Entry Sample Descriptor
+    const MP4A = "mp4a"; //Audio Sample Entry
 
     public static $boxTable = [];
     protected $offset;
@@ -148,7 +151,6 @@ abstract class Box {
         self::$boxTable[self::STSC] = new \ReflectionClass("\Isolator\Boxes\Stsc");
         self::$boxTable[self::STSZ] = new \ReflectionClass("\Isolator\Boxes\Stsz");
         self::$boxTable[self::STCO] = new \ReflectionClass("\Isolator\Boxes\Stco");
-        //self::$boxTable[self::MP4A] = new \ReflectionClass("\Isolator\Boxes\Mp4a");
         self::$boxTable[self::EDTS] = new \ReflectionClass("\Isolator\Boxes\Edts");
         self::$boxTable[self::ELST] = new \ReflectionClass("\Isolator\Boxes\Elst");
         self::$boxTable[self::PDIN] = new \ReflectionClass("\Isolator\Boxes\Pdin");
@@ -218,6 +220,10 @@ abstract class Box {
         self::$boxTable[self::STDP] = new \ReflectionClass("\Isolator\Boxes\Stdp");
         self::$boxTable[self::SDTP] = new \ReflectionClass("\Isolator\Boxes\Sdtp");
         self::$boxTable[self::SGPD] = new \ReflectionClass("\Isolator\Boxes\Sgpd");
+        self::$boxTable[self::ESDS] = new \ReflectionClass("\Isolator\Boxes\Esds");
+        
+        //Sample Entries, might move these to a different table later
+        self::$boxTable[self::MP4A] = new \ReflectionClass("\Isolator\Boxes\SampleEntries\Mp4a");
     }
 
     public function setOffset($offset) {
@@ -345,7 +351,7 @@ abstract class Box {
         $this->container = $container;
     }
 
-    public function loadChildBoxes($internalOffset = null) {
+    public function loadChildBoxes($internalOffset = null , $limit = INF) {
         
         if($internalOffset == NULL){
             $offset = ftell($this->file);
@@ -355,8 +361,9 @@ abstract class Box {
         $newBox;
         $boxSize = 0;
         $boxType;
+        $boxCount = 0;
         
-        while (($offset - $this->offset ) < $this->size) {
+        while (($offset - $this->offset ) < $this->size && $boxCount < $limit) {
             //Set the offset 
 
             fseek($this->file, $offset);
@@ -387,7 +394,7 @@ abstract class Box {
             }
 
 
-
+            $boxCount++;
             $offset += $boxSize;
         }
     }

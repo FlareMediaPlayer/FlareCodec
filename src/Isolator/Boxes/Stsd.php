@@ -21,6 +21,7 @@ class Stsd extends \Isolator\FullBox {
     public function loadData() {
         $this->readHeader();
         $this->entryCount = \Isolator\ByteUtils::readUnsingedInteger($this->file);
+        $this->loadChildBoxes(null, $this->entryCount);
     }
     
     public function getBoxDetails() {

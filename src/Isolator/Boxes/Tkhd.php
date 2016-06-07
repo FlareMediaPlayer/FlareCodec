@@ -111,5 +111,9 @@ class Tkhd extends \Isolator\FullBox {
             $this->matrix[$i] = \Isolator\ByteUtils::readUnsingedInteger($this->file);
         }
     }
+    
+    public function getTrackID(){
+        return $this->trackID;
+    }
 
 }

@@ -15,6 +15,7 @@ class Iso {
     private $file;
     private $fileSize;
     private $boxMap;
+    private $moov; //Keep direct reference to movie box to not waste time iterating every time
 
     function __construct($filename) {
 
@@ -80,6 +81,10 @@ class Iso {
 
                 
             $newBox = \Isolator\Box::parseTopLevelBox($this->file, $offset, $this);
+            
+            if($newBox instanceof \Isolator\Boxes\Moov){
+                $this->moov = $newBox;
+            }
                 
    
 
@@ -88,9 +93,32 @@ class Iso {
     }
 
     public function addBox($box){
+        
         $this->boxMap[] = $box;
+        
     }
     
 
-
+    public function getAudioTracks(){
+        /*
+        foreach($this->boxMap as $box){
+            
+        }
+        */
+        return null;
+    }
+    
+    
+    public function getTrackByID($trackID){
+        
+        $moovTracks = $this->moov->getTracks();
+        foreach($moovTracks as $box){
+            if( $box->getTrackID() == $trackID)
+                return $box;
+        }
+        
+        return null;
+    }
+    
+    
 }

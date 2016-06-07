@@ -66,6 +66,20 @@ class Moov extends \Isolator\Box {
         
 
     }
+    
+    
+    public function getTracks(){
+      
+        $tracks;
+    
+        foreach($this->boxMap as $box){
+            if($box instanceof \Isolator\Boxes\Trak){
+                $tracks[] = $box;
+            }
+        }
+  
+        return $tracks;
+    }
 
 
 }

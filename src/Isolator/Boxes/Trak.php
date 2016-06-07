@@ -22,8 +22,17 @@ class Trak extends \Isolator\Box {
         $internalOffset = $this->offset + $headerLength;
         $this->loadChildBoxes($internalOffset);
         
+        
     }
 
-
+    public function getTrackID(){
+        
+        foreach($this->boxMap as $box){
+            if($box instanceof \Isolator\Boxes\Tkhd){
+                return $box->getTrackID();
+            }
+        }
+        
+    }
 
 }

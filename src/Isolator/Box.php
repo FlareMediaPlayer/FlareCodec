@@ -104,9 +104,9 @@ abstract class Box {
     const PADB = "padb";
     const STDP = "stdp";
     const SDTP = "sdtp";
-    
-    //SAMPLE ENTRIES
     const ESDS = "esds"; //Entry Sample Descriptor
+    //
+    //SAMPLE ENTRIES
     const MP4A = "mp4a"; //Audio Sample Entry
 
     public static $boxTable = [];
@@ -400,7 +400,18 @@ abstract class Box {
     }
     
 
-
+    protected function readHeader(){
+        
+        $headerSize = 8; //4 for size, 4 for type
+        if($this->size > 4294967295){
+            $headerSize += 4;
+        }
+        
+        
+        fseek($this->file, $this->offset + $headerSize); //Set the read position directly after header data
+        $this->headerSize = $headerSize; //Set the overall header size;
+        
+    }
 }
 
 Box::__init__();

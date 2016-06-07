@@ -18,6 +18,24 @@ abstract class AudioSampleEntry extends \Isolator\Boxes\SampleEntries\SampleEntr
         parent::__construct($file);
     }
     
+    public function loadData(){
+        parent::loadData();
+        
+        \Isolator\ByteUtils::skipBytes($this->file, 8);//Reserved bytes
+        $this->channelCount = \Isolator\ByteUtils::readUnsignedShort($this->file);
+        $this->sampleSize = \Isolator\ByteUtils::readUnsignedShort($this->file);
+        \Isolator\ByteUtils::skipBytes($this->file, 2);//Reserved bytes
+        \Isolator\ByteUtils::skipBytes($this->file, 2);//Reserved bytes
+        $this->sampleRate = \Isolator\ByteUtils::readUnsignedShort($this->file);
+        \Isolator\ByteUtils::skipBytes($this->file, 2);//Reserved bytes
+                
+        //var_dump(ftell($this->file));
+
+        $this->loadChildBoxes();
+
+         
+    }
+    
     public function getChannelCount(){
         return $this->channelCount;
     }

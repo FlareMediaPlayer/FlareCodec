@@ -19,7 +19,9 @@ class Tkhd extends \Isolator\FullBox {
     private $matrix = [];
     private $width;
     private $height;
-    private $isAudio = FALSE;
+    
+    private $minf; //cached reference to $minf box
+
 
     function __construct($file) {
 
@@ -62,9 +64,7 @@ class Tkhd extends \Isolator\FullBox {
         $this->layer = \Isolator\ByteUtils::readUnsignedShort($this->file);
         $this->alternateGroup = \Isolator\ByteUtils::readUnsignedShort($this->file);
         $this->volume = \Isolator\ByteUtils::readUnsignedShort($this->file);
-        if ($this->volume == 0x0100) {
-            $this->isAudio = TRUE;
-        }
+
         \Isolator\ByteUtils::skipBytes($this->file, 2); //skip 16 bits
 
         $this->readMatrix();
@@ -96,18 +96,13 @@ class Tkhd extends \Isolator\FullBox {
         $details["Height"] = $this->height;
         $details["Width"] = $this->width;
 
-        if ($this->isAudio) {
-            $details["Is Audio"] = "True";
-        } else {
-            $details["Is Audio"] = "False";
-        }
 
 
         return $details;
     }
 
     protected function readMatrix() {
-        for ($i; $i < 9; $i++) {
+        for ($i = 0; $i < 9; $i++) {
             $this->matrix[$i] = \Isolator\ByteUtils::readUnsingedInteger($this->file);
         }
     }

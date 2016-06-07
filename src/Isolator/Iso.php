@@ -100,12 +100,7 @@ class Iso {
     
 
     public function getAudioTracks(){
-        /*
-        foreach($this->boxMap as $box){
-            
-        }
-        */
-        return null;
+        return $this->moov->getAudioTracks();
     }
     
     

@@ -19,7 +19,7 @@ class Smhd extends \Isolator\FullBox {
 
     public function loadData() {
         $this->readHeader();
-        $this->balance = \Isolator\ByteUtils::readFixedPoint8_8($file);
+        $this->balance = \Isolator\ByteUtils::readFixedPoint8_8($this->file);
     }
 
     public function getBoxDetails() {

@@ -40,10 +40,27 @@ class Mp4a extends \Isolator\Boxes\SampleEntries\AudioSampleEntry {
 
         $this->boxType = \Isolator\Box::MP4A;
         parent::__construct($file);
+        
     }
 
     public function loadData() {
-        var_dump($this instanceof \Isolator\Boxes\SampleEntries\AudioSampleEntry);
+        parent::loadData();
+        
     }
 
+    public function getBoxDetails() {
+        
+        $details = [];
+        $details["Size"] = $this->size;
+        $details["Offset"] = $this->offset;
+        $details["Data Reference Index"] = $this->dataReferenceIndex;
+        $details["Channel Count"] = $this->channelCount;
+        $details["Sample Size"] = $this->sampleSize;
+        $details["Sample Rate"] = $this->sampleRate;
+
+        
+
+
+        return $details;
+    }
 }

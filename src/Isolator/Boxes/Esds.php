@@ -31,12 +31,13 @@ namespace Isolator\Boxes;
  *
  * @author Brian Parra
  */
-class Esds {
+class Esds extends \Isolator\Box{
 
     function __construct($file) {
 
         $this->boxType = \Isolator\Box::ESDS;
         parent::__construct($file);
+        
     }
 
     public function loadData() {

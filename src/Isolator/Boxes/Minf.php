@@ -24,5 +24,20 @@ class Minf extends \Isolator\Box {
         $internalOffset = $this->offset + $headerLength;
         $this->loadChildBoxes($internalOffset);
     }
+    
+    public function getStblBox(){
+        
+        foreach ($this->boxMap as $box) {
+            if ($box instanceof \Isolator\Boxes\Stbl) {
+                return $box;
+            }
+        }
+        return null;
+        
+    }
+    
+    public function isAudioTrack(){
+        return $this->getStblBox()->isAudioTrack();
+    }
 
 }

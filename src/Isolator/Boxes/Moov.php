@@ -67,6 +67,24 @@ class Moov extends \Isolator\Box {
 
     }
     
+    public function getAudioTracks(){
+        
+        $tracks = array();
+    
+        foreach($this->boxMap as $box){
+            if($box instanceof \Isolator\Boxes\Trak){
+                
+                //Check if audio track
+                if($box->isAudioTrack()){
+                    $tracks[] = $box;
+                }
+                
+            }
+        }
+  
+        return $tracks;
+
+    }
     
     public function getTracks(){
       

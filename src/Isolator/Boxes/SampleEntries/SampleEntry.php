@@ -15,4 +15,10 @@ abstract class SampleEntry extends \Isolator\Box{
         parent::__construct($file);
     }
     
+    public function loadData() {
+        $this->readHeader();
+        \Isolator\ByteUtils::skipBytes($this->file, 6);//Reserved bytes
+        $this->dataReferenceIndex = \Isolator\ByteUtils::readUnsignedShort($this->file);
+    }
+    
 }

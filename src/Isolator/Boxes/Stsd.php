@@ -39,5 +39,15 @@ class Stsd extends \Isolator\FullBox {
 
         return $details;
     }
+    
+    public function isAudioTrack(){
+        
+        foreach ($this->boxMap as $box) {
+            if ($box instanceof \Isolator\Boxes\SampleEntries\AudioSampleEntry) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

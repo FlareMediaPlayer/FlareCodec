@@ -38,5 +38,12 @@ class Stco extends \Isolator\FullBox {
 
         return $details;
     }
+    
+    public function getEntryCount(){
+        return $this->entryCount;
+    }
 
+    public function getChunkOffsetTable(){
+        return $this->chunkOffsetTable;
+    }
 }

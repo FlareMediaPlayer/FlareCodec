@@ -11,7 +11,7 @@ class Stsz extends \Isolator\FullBox {
     
     private $sampleSize;
     private $sampleCount;
-    private $sampleTable;
+    private $sampleSizeTable;
     
     function __construct($file) {
         
@@ -21,14 +21,20 @@ class Stsz extends \Isolator\FullBox {
     }
     
     public function loadData() {
+        
         $this->readHeader();
         $this->sampleSize = \Isolator\ByteUtils::readUnsingedInteger($this->file);
         $this->sampleCount = \Isolator\ByteUtils::readUnsingedInteger($this->file);
         if($this->sampleSize ==0){
             for($i = 0; $i< $this->sampleCount; $i++){
-                $this->sampleTable[] = \Isolator\ByteUtils::readUnsingedInteger($this->file);
+                $this->sampleSizeTable[] = \Isolator\ByteUtils::readUnsingedInteger($this->file);
             }
         }
+        
+    }
+    
+    public function getSampleSizeTable(){
+        return $this->sampleSizeTable;
     }
     
     public function getBoxDetails() {
@@ -43,6 +49,7 @@ class Stsz extends \Isolator\FullBox {
         $details["Sample Count"] = $this->sampleCount;
   
         return $details;
+        
     }
 
 }

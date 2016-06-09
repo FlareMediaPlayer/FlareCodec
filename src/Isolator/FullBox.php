@@ -35,4 +35,12 @@ abstract class FullBox extends \Isolator\Box {
         
     }
     
+    public function getVersion(){
+        return $this->version;
+    }
+    
+    public function getFlags(){
+        return $this->flags;
+    }
+    
 }

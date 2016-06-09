@@ -15,15 +15,17 @@ ini_set('html_errors', 0);
 // ----------------------------------------------------------------------------------------------------
 // - Error Reporting
 // ----------------------------------------------------------------------------------------------------
-error_reporting(-1);
+error_reporting((E_ALL));
 
 require_once '../src/Isolator/AutoLoader.php';
 
 
 $iso = new  Isolator\Iso("sample.mp4");
-$audioTracks = $iso->getAudioTracks();
-foreach($audioTracks as $audioTrack){
-    echo "Track ID : " . $audioTrack->getTrackID();
-}
-Isolator\IsoVisualizer::visualize($iso);
+$iso->loadData();
+//$audioTracks = $iso->getAudioTracks();
+
+//$rippedTrack = Isolator\Iso::RipAudio($iso, "output.m4a");
+//Isolator\IsoVisualizer::visualize($iso);
+
+//Isolator\IsoVisualizer::visualize($rippedTrack);
 

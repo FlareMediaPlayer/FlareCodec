@@ -246,6 +246,15 @@ abstract class Box {
         $this->file = $file;
     }
 
+    public function getFile(){
+        return $this->file;
+    }
+    
+    public function getSize(){
+        return $this->size;
+    }
+
+
     public abstract function loadData();
 
     public function displayBoxMap() {
@@ -287,10 +296,7 @@ abstract class Box {
         }
     }
 
-    public function getSize() {
 
-        return $this->size;
-    }
 
     public function setLargeSize($isLarge) {
         $this->largeSize = true;
@@ -318,6 +324,7 @@ abstract class Box {
         //Get Size
         $boxSize = ByteUtils::readUnsingedInteger($file);
         $boxType = ByteUtils::readBoxType($file);
+        var_dump($boxType);
 
         if ($boxSize == 1) {
 
@@ -411,6 +418,16 @@ abstract class Box {
         fseek($this->file, $this->offset + $headerSize); //Set the read position directly after header data
         $this->headerSize = $headerSize; //Set the overall header size;
         
+    }
+    
+    public function getBoxByClass($class){
+        
+        foreach($this->boxMap as $box){
+            if ($box instanceof $class)
+                return $box;
+        }
+        
+        return null;
     }
 }
 

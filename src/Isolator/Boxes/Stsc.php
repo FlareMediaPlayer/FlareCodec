@@ -34,6 +34,11 @@ class Stsc extends \Isolator\FullBox {
         }
     }
     
+    public function getChunkTable(){
+        return $this->chunkTable;
+    }
+
+
     public function getBoxDetails() {
 
         $details = [];

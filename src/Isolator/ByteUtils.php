@@ -93,5 +93,12 @@ class ByteUtils {
         }
         return $string;
     }
-    
+    /*
+    public static function writeBinary($output, $resource, $offset , $count){
+        //fop.write(fullData, totalData[n][0] , totalData[n][2]);
+        fseek($resource, $offset);
+        fwrite($output, fread($resource, $count));
+        
+    }
+    */
 }

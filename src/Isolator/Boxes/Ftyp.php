@@ -28,7 +28,7 @@ class Ftyp extends \Isolator\Box {
     const AUDIO_ENCRYPTED = "M4P ";
     const MP7 = "mp71";
 
-    private $majorBrand;
+    private $majorBrand ;
     private $minorVersion;
     private $compatibleBrands = [];
 
@@ -79,20 +79,29 @@ class Ftyp extends \Isolator\Box {
     
 
   
-  public function getMajorBrand() {
+    public function getMajorBrand() {
 
-        $this->majorBrand;
+        return $this->majorBrand;
     }
 
     public function getMinorVersion() {
 
-        $this->minorVersion;
+        return $this->minorVersion;
     }
 
     public function getCompatibleBrands() {
 
 
         return $this->compatibleBrands;
+    }
+    
+    public function loadDataFromBox($box){
+        
+     
+        
+        $this->majorBrand = $box->getMajorBrand();     
+        $this->minorVersion = $box ->getMinorVersion();
+        $this->compatibleBrands = $box->getCompatibleBrands();
     }
 
 }

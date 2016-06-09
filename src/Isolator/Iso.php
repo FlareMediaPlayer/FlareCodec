@@ -23,9 +23,11 @@ class Iso {
         $this->file = fopen($this->filename, "rb+") or die("Unable to open file!");
         $this->fileSize = filesize($filename);
         $this->boxMap = [];
-        $this->loadData();
+        //$this->loadData();
         //var_dump($this->boxMap);
     }
+    
+    
 
     public function getFileName(){
         return $this->filename;
@@ -84,6 +86,8 @@ class Iso {
             
             if($newBox instanceof \Isolator\Boxes\Moov){
                 $this->moov = $newBox;
+           
+                
             }
                 
    
@@ -114,6 +118,76 @@ class Iso {
         
         return null;
     }
+    
+    public static function IsoFileFrom(){
+        
+    }
+    
+    function createEmptyIso(){
+        
+    }
+    
+    function getFtyp(){
+        foreach($this->boxMap as $box){
+            if( $box instanceof \Isolator\Boxes\Ftyp)
+                return $box;
+        }
+    }
+    
+    public function getMoov(){
+        foreach($this->boxMap as $box){
+            if( $box instanceof \Isolator\Boxes\Moov)
+                return $box;
+        }
+    }
+    
+    public function getMvhd(){
+        foreach($this->getMoov()->getBoxMap() as $box){
+            if( $box instanceof \Isolator\Boxes\Mvhd)
+                return $box;
+        }
+    }
+
+/*
+    public static function RipAudio($inputIso, $outputFile){
+        
+        if(file_exists ( $outputFile)){
+            unlink ($outputFile);
+        }
+        
+        //Fix this later
+        $file = fopen($outputFile,"w");
+        fclose($file);
+        
+        $iso = new Iso($outputFile);
+        
+        //Need to rethink the constructors
+        $ftyp = new \Isolator\Boxes\Ftyp($outputFile);
+        $ftyp->loadDataFromBox($inputIso->getFtyp());
+        
+        
+        
+        $moov = new \Isolator\Boxes\Moov($outputFile);
+        $mvhd = new \Isolator\Boxes\Mvhd($outputFile);
+        $mvhd->loadDataFromBox($inputIso->getMvhd());
+        
+        $iso->addBox($ftyp);
+        $moov->addBox($mvhd);
+        $mvhd->setContainer($moov);
+        $iso->addBox($moov);
+        
+        $audioTracks = $inputIso->getAudioTracks();
+        
+        foreach ($audioTracks as $track){
+            $audioTrack = new \Isolator\Presentation\AudioTrack($track);
+            //$audioTrack->setOutputFile($outputFile);
+        }
+        
+        return $iso;
+        
+    }
+    */
+    
     
     
 }

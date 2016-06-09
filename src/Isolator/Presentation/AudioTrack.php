@@ -93,7 +93,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
             }
         }
 
-
+        
         
         
         //Lets Try Dumping raw binary to file

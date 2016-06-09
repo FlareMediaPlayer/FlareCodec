@@ -24,8 +24,8 @@ $iso = new  Isolator\Iso("sample.mp4");
 $iso->loadData();
 //$audioTracks = $iso->getAudioTracks();
 
-//$rippedTrack = Isolator\Iso::RipAudio($iso, "output.m4a");
-//Isolator\IsoVisualizer::visualize($iso);
+$rippedTrack = Isolator\Iso::RipAudio($iso, "output.m4a");
+Isolator\IsoVisualizer::visualize($iso);
 
-//Isolator\IsoVisualizer::visualize($rippedTrack);
+Isolator\IsoVisualizer::visualize($rippedTrack);
 

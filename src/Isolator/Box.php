@@ -324,15 +324,9 @@ abstract class Box {
         //Get Size
         $boxSize = ByteUtils::readUnsingedInteger($file);
         $boxType = ByteUtils::readBoxType($file);
-        var_dump($boxType);
+        
 
-        if ($boxSize == 1) {
 
-            $boxSize = ByteUtils::readUnsingedLong($file);
-            $newBox->setLargeSize(true);
-        }
-        if ($boxSize == 0)
-            $toEOF = true;
         //UUID's not yet supported, skip for now
         //if($boxType == \Isolator\Box::UUID) \Isolator\ByteUtils::skipBytes ($file, 16);
         //Check if Valid addition

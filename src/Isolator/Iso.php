@@ -72,7 +72,7 @@ class Iso {
         $boxType;
         $dataBuffer;
         $newBox;
-
+        
         do {
             //Set the offset 
             //fseek($this->file, $offset);
@@ -148,7 +148,7 @@ class Iso {
         }
     }
 
-/*
+
     public static function RipAudio($inputIso, $outputFile){
         
         if(file_exists ( $outputFile)){
@@ -186,7 +186,7 @@ class Iso {
         return $iso;
         
     }
-    */
+    
     
     
     

@@ -37,6 +37,10 @@ class Stsz extends \Isolator\FullBox {
         return $this->sampleSizeTable;
     }
     
+    public function getSampleCount(){
+        return $this->sampleCount;
+    }
+    
     public function getBoxDetails() {
 
         $details = [];

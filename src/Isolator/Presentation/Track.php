@@ -11,4 +11,5 @@ namespace Isolator\Presentation;
 
 class Track {
     //put your code here
+    protected $file;
 }

@@ -157,7 +157,7 @@ class Iso {
         
         //Fix this later
         $file = fopen($outputFile,"w");
-        fclose($file);
+        
         
         $iso = new Iso($outputFile);
         
@@ -181,6 +181,7 @@ class Iso {
         foreach ($audioTracks as $track){
             $audioTrack = new \Isolator\Presentation\AudioTrack($track);
             //$audioTrack->setOutputFile($outputFile);
+            $audioTrack->dumpBinary($file);
         }
         
         return $iso;

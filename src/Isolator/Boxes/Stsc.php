@@ -27,7 +27,7 @@ class Stsc extends \Isolator\FullBox {
         for($i = 0; $i < $this->entryCount ; $i++){
             $this->chunkTable[$i] =  
                     [
-                        \Isolator\ByteUtils::readUnsingedInteger($this->file) ,
+                        \Isolator\ByteUtils::readUnsingedInteger($this->file) -1,
                         \Isolator\ByteUtils::readUnsingedInteger($this->file),
                         \Isolator\ByteUtils::readUnsingedInteger($this->file)
                     ];
@@ -36,6 +36,10 @@ class Stsc extends \Isolator\FullBox {
     
     public function getChunkTable(){
         return $this->chunkTable;
+    }
+    
+    public function getChunkTableEntryCount(){
+        return $this->entryCount;
     }
 
 

@@ -187,20 +187,30 @@ class Iso {
         $mvhd->setContainer($moov);
         $iso->addBox($moov);
         
+        $mdat = new \Isolator\Boxes\Mdat($iso->getFile());
+        $iso->addBox($mdat);
+        
+        $mdat->prepareForWriting();
+        
         $audioTracks = $inputIso->getAudioTracks();
         
         foreach ($audioTracks as $track){
             $audioTrack = new \Isolator\Presentation\AudioTrack($track);
-            //$audioTrack->setOutputFile($outputFile);
-            //$audioTrack->dumpBinary($file);
+            $audioTrack->setOutputFile($outputFile);
+            $audioTrack->dumpBinary($iso->getFile()); // Testing for now
         }
         
+        $mdat->finalizeWriting();
         
         
         return $iso;
         
     }
     
+    
+    public function finalize(){
+        
+    }
     
    
     

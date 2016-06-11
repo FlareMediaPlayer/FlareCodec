@@ -103,10 +103,11 @@ class Ftyp extends \Isolator\Box {
     }
 
     public function writeToFile() {
+        $this->offset = ftell($this->file); //Save the file pointer
         //This box will probably never be 64 bit
         $compatibleBrandCount = count($this->compatibleBrands);
         //size + type + major brand + minor version = 4 * 4 = 16 bytes
-        $totalSize = 16 + ($compatibleBrandCount * 4);
+        $this->size = 16 + ($compatibleBrandCount * 4);
 
 
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $totalSize); //Write the box size
@@ -116,6 +117,8 @@ class Ftyp extends \Isolator\Box {
         for ($i = 0; $i < $compatibleBrandCount; $i++) {
             \Isolator\ByteUtils::writeChars($this->file, $this->compatibleBrands[$i]);
         }
+        
+        
     }
 
 }

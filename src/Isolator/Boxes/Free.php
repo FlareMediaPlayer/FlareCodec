@@ -46,8 +46,9 @@ class Free extends \Isolator\Box {
     
     public function writeToFile() {
   
+        $this->offset = ftell($this->file); //Save the file pointer
         //size + type 
-        $totalSize = 8 + $this->freeBytes;
+        $this->size = 8 + $this->freeBytes;
         
         if($this->size > 4294967295){
             $totalSize += 4;

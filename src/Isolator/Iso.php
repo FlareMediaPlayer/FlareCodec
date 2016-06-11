@@ -171,9 +171,9 @@ class Iso {
         
         
         
-        $moov = new \Isolator\Boxes\Moov($iso->getFile());
-        $mvhd = new \Isolator\Boxes\Mvhd($iso->getFile());
-        $mvhd->loadDataFromBox($inputIso->getMvhd());
+        //$moov = new \Isolator\Boxes\Moov($iso->getFile());
+        //$mvhd = new \Isolator\Boxes\Mvhd($iso->getFile());
+        //$mvhd->loadDataFromBox($inputIso->getMvhd());
         
         $iso->addBox($ftyp);
         
@@ -183,9 +183,9 @@ class Iso {
         $ftyp->writeToFile();
         $free->writeToFile();
         
-        $moov->addBox($mvhd);
-        $mvhd->setContainer($moov);
-        $iso->addBox($moov);
+        //$moov->addBox($mvhd);
+        //$mvhd->setContainer($moov);
+        //$iso->addBox($moov);
         
         $mdat = new \Isolator\Boxes\Mdat($iso->getFile());
         $iso->addBox($mdat);

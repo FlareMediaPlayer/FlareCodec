@@ -42,6 +42,7 @@ class Mdat extends \Isolator\Box {
     
     public function prepareForWriting(){
         $this->offset = ftell($this->file); //Save the file pointer
+        $this->headerSize = 8;
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, 0); //Write the box size, place holder for now
         \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
     }
@@ -53,7 +54,7 @@ class Mdat extends \Isolator\Box {
         fseek($this->file, $this->offset); //Reset write pointer to beginning of file
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->size); //Overwrite the box size
         fseek($this->file, $mdatEnd); //Finally put the file pointer back at the end of the file
-        
+        $this->dataBytes = $this->size - $this->headerSize;
     }
 
 }

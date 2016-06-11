@@ -176,9 +176,12 @@ class Iso {
         $mvhd->loadDataFromBox($inputIso->getMvhd());
         
         $iso->addBox($ftyp);
+        
         $free = new \Isolator\Boxes\Free($iso->getFile());
+        $iso->addBox($free);
         $free->setFreeBytes(8); //Add some extra padding to extend header size if necessary
         $ftyp->writeToFile();
+        $free->writeToFile();
         
         $moov->addBox($mvhd);
         $mvhd->setContainer($moov);

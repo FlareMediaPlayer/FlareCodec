@@ -43,5 +43,27 @@ class Free extends \Isolator\Box {
 
         return $details;
     }
+    
+    public function writeToFile() {
+  
+        //size + type 
+        $totalSize = 8 + $this->freeBytes;
+        
+        if($this->size > 4294967295){
+            $totalSize += 4;
+            \Isolator\ByteUtils::writeUnsignedInteger($this->file, 1); //Write the box size
+            \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
+            \Isolator\ByteUtils::writeUnsignedLong($this->file, $totalSize); //Write the box size
+        }else{
+            \Isolator\ByteUtils::writeUnsignedInteger($this->file, $totalSize); //Write the box size
+            \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
+        }
+
+        //This can probably be done more efficiently
+        for ($i = 0; $i < $this->freeBytes; $i++) {
+            \Isolator\ByteUtils::writeUnsignedByte($this->file, 0);
+        }
+        
+    }
 
 }

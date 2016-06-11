@@ -108,8 +108,7 @@ class Ftyp extends \Isolator\Box {
         //size + type + major brand + minor version = 4 * 4 = 16 bytes
         $totalSize = 16 + ($compatibleBrandCount * 4);
 
-        //Reset File Writer to the top of the file
-        fseek($this->file, 0);
+
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $totalSize); //Write the box size
         \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
         \Isolator\ByteUtils::writeChars($this->file, $this->majorBrand); //Write the brand

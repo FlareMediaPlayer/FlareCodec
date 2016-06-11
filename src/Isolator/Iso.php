@@ -147,6 +147,10 @@ class Iso {
                 return $box;
         }
     }
+    
+    public function getFile(){
+        return $this->file;
+    }
 
 
     public static function RipAudio($inputIso, $outputFile){
@@ -156,22 +160,26 @@ class Iso {
         }
         
         //Fix this later
-        $file = fopen($outputFile,"w");
+        $out = fopen($outputFile,"w");
         
         
         $iso = new Iso($outputFile);
         
         //Need to rethink the constructors
-        $ftyp = new \Isolator\Boxes\Ftyp($outputFile);
+        $ftyp = new \Isolator\Boxes\Ftyp($iso->getFile());
         $ftyp->loadDataFromBox($inputIso->getFtyp());
         
         
         
-        $moov = new \Isolator\Boxes\Moov($outputFile);
-        $mvhd = new \Isolator\Boxes\Mvhd($outputFile);
+        $moov = new \Isolator\Boxes\Moov($iso->getFile());
+        $mvhd = new \Isolator\Boxes\Mvhd($iso->getFile());
         $mvhd->loadDataFromBox($inputIso->getMvhd());
         
         $iso->addBox($ftyp);
+        $free = new \Isolator\Boxes\Free($iso->getFile());
+        $free->setFreeBytes(8); //Add some extra padding to extend header size if necessary
+        $ftyp->writeToFile();
+        
         $moov->addBox($mvhd);
         $mvhd->setContainer($moov);
         $iso->addBox($moov);
@@ -181,14 +189,16 @@ class Iso {
         foreach ($audioTracks as $track){
             $audioTrack = new \Isolator\Presentation\AudioTrack($track);
             //$audioTrack->setOutputFile($outputFile);
-            $audioTrack->dumpBinary($file);
+            //$audioTrack->dumpBinary($file);
         }
+        
+        
         
         return $iso;
         
     }
     
     
-    
+   
     
 }

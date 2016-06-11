@@ -63,7 +63,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->chunkTableEntryCount = $this->stsc->getChunkTableEntryCount();
 
 
-        //[index][offset, number of samples, byte size ]  
+        //[index][offset, number of samples, bytes per sample ]  
         for ($i = 0; $i < $this->chunkCount; $i++) {
             $this->dataMap[$i][0] = $this->chunkOffsetTable[$i];
         }
@@ -105,6 +105,16 @@ class AudioTrack extends \Isolator\Presentation\Track {
             $data = fread($this->file, $this->dataMap[$i][2]);
             fwrite($outputFile, $data);
         }
+    }
+    
+    public function getSample($num){
+        
+        if($num > $this->sampleCount){
+            return; //Throw an exception later here
+        }
+        fseek($this->file, $this->dataMap[$num][0]);
+        return fread($this->file, $this->dataMap[$num][2]);
+            
     }
 
     //Probably just for testing

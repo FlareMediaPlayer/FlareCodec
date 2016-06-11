@@ -423,6 +423,19 @@ abstract class Box {
         
         return null;
     }
+    
+    public function writeToFile(){
+        
+
+    }
+    
+    public function calculateSize(){
+        return 0;
+    }
+    
+    private function calculateHeaderSize($childBoxesSize){
+
+    }
 }
 
 Box::__init__();

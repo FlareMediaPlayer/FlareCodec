@@ -21,6 +21,11 @@ class ByteUtils {
         return $dataBuffer[1];
     }
     
+    public static function writeUnsignedInteger($file, $data){
+        $dataBuffer = pack("N" , $data);
+        fwrite($file, $dataBuffer);
+    }
+    
     public static function readUnsingedLong($file){
         $dataBuffer = fread ( $file , 8 );
         $dataBuffer = unpack("J", $dataBuffer );
@@ -39,12 +44,19 @@ class ByteUtils {
         return chr($dataBuffer[1]) . chr($dataBuffer[2]) . chr($dataBuffer[3]) . chr($dataBuffer[4]);
     }
     
+    public static function writeChars($file, $data){
+        fwrite($file, $data);
+    }
+    
     public static function readUnsignedByte($file){
         $dataBuffer = fread ( $file , 1 );
         $dataBuffer = unpack("C*", $dataBuffer );
         return $dataBuffer[1];
     }
     
+    
+
+
     public static function readUnsignedShort($file){
         $dataBuffer = fread ( $file , 2 );
         $dataBuffer = unpack("n", $dataBuffer );

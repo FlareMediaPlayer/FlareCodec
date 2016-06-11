@@ -28,7 +28,7 @@ class Ftyp extends \Isolator\Box {
     const AUDIO_ENCRYPTED = "M4P ";
     const MP7 = "mp71";
 
-    private $majorBrand ;
+    private $majorBrand;
     private $minorVersion;
     private $compatibleBrands = [];
 
@@ -65,20 +65,18 @@ class Ftyp extends \Isolator\Box {
         $details["Offset"] = $this->offset;
         $details["Major Brand"] = $this->majorBrand;
         $details["Minor Version"] = $this->minorVersion;
-        
-        if(!empty($this->compatibleBrands)){
+
+        if (!empty($this->compatibleBrands)) {
             $details["Compatible Brands"] = [];
-           foreach($this->compatibleBrands as $brand){
-               $details["Compatible Brands"][] = $brand;
-           } 
+            foreach ($this->compatibleBrands as $brand) {
+                $details["Compatible Brands"][] = $brand;
+            }
         }
-    
-         
+
+
         return $details;
     }
-    
 
-  
     public function getMajorBrand() {
 
         return $this->majorBrand;
@@ -94,14 +92,31 @@ class Ftyp extends \Isolator\Box {
 
         return $this->compatibleBrands;
     }
-    
-    public function loadDataFromBox($box){
-        
-     
-        
-        $this->majorBrand = $box->getMajorBrand();     
-        $this->minorVersion = $box ->getMinorVersion();
+
+    public function loadDataFromBox($box) {
+
+
+
+        $this->majorBrand = $box->getMajorBrand();
+        $this->minorVersion = $box->getMinorVersion();
         $this->compatibleBrands = $box->getCompatibleBrands();
+    }
+
+    public function writeToFile() {
+        //This box will probably never be 64 bit
+        $compatibleBrandCount = count($this->compatibleBrands);
+        //size + type + major brand + minor version = 4 * 4 = 16 bytes
+        $totalSize = 16 + ($compatibleBrandCount * 4);
+
+        //Reset File Writer to the top of the file
+        fseek($this->file, 0);
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $totalSize); //Write the box size
+        \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
+        \Isolator\ByteUtils::writeChars($this->file, $this->majorBrand); //Write the brand
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->minorVersion); //Write version
+        for ($i = 0; $i < $compatibleBrandCount; $i++) {
+            \Isolator\ByteUtils::writeChars($this->file, $this->compatibleBrands[$i]);
+        }
     }
 
 }

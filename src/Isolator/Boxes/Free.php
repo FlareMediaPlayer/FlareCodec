@@ -20,6 +20,10 @@ class Free extends \Isolator\Box {
         
     }
     
+    public function setFreeBytes($freeBytes){
+        $this->freeBytes = $freeBytes;
+    }
+    
     public function loadData() {
 
         if ($this->largeSize) {

@@ -98,6 +98,10 @@ class Mvhd extends \Isolator\FullBox {
     public function getDuration(){
         return $this->duration;
     }
+    
+    public function setNextTrackID($ID){
+        $this->nextTrackID = $ID;
+    }
 
     public function loadDataFromBox($box) {
         $this->version = $box->getVersion();

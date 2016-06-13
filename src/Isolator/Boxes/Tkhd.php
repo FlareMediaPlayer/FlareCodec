@@ -9,16 +9,18 @@ namespace Isolator\Boxes;
  */
 class Tkhd extends \Isolator\FullBox {
 
-    private $creationTime;
-    private $modificationTime;
-    private $trackID;
-    private $duration;
-    private $layer;
-    private $alternateGroup;
-    private $volume;
-    private $matrix = [];
-    private $width;
-    private $height;
+    private $creationTime = 0;
+    private $modificationTime = 0;
+    private $trackID = 0;
+    private $duration = 0;
+    private $layer = 0;
+    private $alternateGroup = 0;
+    private $volume = 0;
+    private $matrix = [
+        65536, 0, 0, 0, 65536, 0, 0, 0, 1073741824
+    ]; // Unity Matrix
+    private $width = 0;
+    private $height = 0;
     
     private $minf; //cached reference to $minf box
 
@@ -63,7 +65,7 @@ class Tkhd extends \Isolator\FullBox {
         \Isolator\ByteUtils::skipBytes($this->file, 8); //skip 64 bits
         $this->layer = \Isolator\ByteUtils::readUnsignedShort($this->file);
         $this->alternateGroup = \Isolator\ByteUtils::readUnsignedShort($this->file);
-        $this->volume = \Isolator\ByteUtils::readUnsignedShort($this->file);
+        $this->volume = \Isolator\ByteUtils::readFixedPoint8_8($this->file);
 
         \Isolator\ByteUtils::skipBytes($this->file, 2); //skip 16 bits
 
@@ -107,8 +109,50 @@ class Tkhd extends \Isolator\FullBox {
         }
     }
     
+    public function writeToFile() {
+        $this->offset = ftell($this->file); //Save the file pointer
+        $this->size = 92; //expand if version 1
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->size); //Write the box size place holder for now
+        \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
+        
+        \Isolator\ByteUtils::writeUnsignedByte($this->file, $this->version); //Write the box version
+        \Isolator\ByteUtils::writeUnsignedByte($this->file, $this->flags[0]); //Write the box version
+        \Isolator\ByteUtils::writeUnsignedByte($this->file, $this->flags[1]); //Write the box version
+        \Isolator\ByteUtils::writeUnsignedByte($this->file, $this->flags[2]); //Write the box version //12 bytes so far
+        
+        //12
+        
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->creationTime);
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->modificationTime);
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->trackID);
+        \Isolator\ByteUtils::padBytes($this->file, 4);
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->duration);
+        //32
+        
+        \Isolator\ByteUtils::padBytes($this->file, 8);
+        \Isolator\ByteUtils::writeUnsignedShort($this->file, $this->layer);
+        \Isolator\ByteUtils::writeUnsignedShort($this->file, $this->alternateGroup);
+        \Isolator\ByteUtils::writeFixed8_8($this->file, $this->volume);
+        \Isolator\ByteUtils::padBytes($this->file, 2);
+        //48
+        
+        $this->writeMatrix();
+        //84
+        
+        \Isolator\ByteUtils::writeFixed16_16($this->file, $this->width);
+        \Isolator\ByteUtils::writeFixed16_16($this->file, $this->height);
+        //92
+    }
+
+
     public function getTrackID(){
         return $this->trackID;
+    }
+    
+    protected function writeMatrix(){
+        for ($i = 0; $i < 9; $i++) {
+            \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->matrix[$i]);
+        }
     }
 
 }

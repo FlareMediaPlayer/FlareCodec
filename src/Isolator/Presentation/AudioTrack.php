@@ -123,5 +123,9 @@ class AudioTrack extends \Isolator\Presentation\Track {
     public function setOutputFile($file) {
         $this->outputFile = $file;
     }
+    
+    public static function createEmptyAudioTrack($iso){
+        
+    }
 
 }

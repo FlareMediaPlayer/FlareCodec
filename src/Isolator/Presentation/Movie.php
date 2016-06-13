@@ -92,8 +92,10 @@ class Movie {
     }
 
     public function finalize() {
+        
         $this->iso->addBox($this->moov);
         $this->moov->writeToFile();
+        
     }
 
 }

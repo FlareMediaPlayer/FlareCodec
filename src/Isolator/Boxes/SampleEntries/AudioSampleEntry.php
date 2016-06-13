@@ -9,8 +9,8 @@ namespace Isolator\Boxes\SampleEntries;
  */
 abstract class AudioSampleEntry extends \Isolator\Boxes\SampleEntries\SampleEntry {
 
-    protected $channelCount;
-    protected $sampleSize;
+    protected $channelCount = 2;
+    protected $sampleSize = 16;
     protected $sampleRate;
     //put your code here
     function __construct($file) {

@@ -1,29 +1,5 @@
 <?php
 
-/*
- * The MIT License
- *
- * Copyright 2016 Brian Parra.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 namespace Isolator\Boxes\SampleEntries;
 
 /**
@@ -40,16 +16,14 @@ class Mp4a extends \Isolator\Boxes\SampleEntries\AudioSampleEntry {
 
         $this->boxType = \Isolator\Box::MP4A;
         parent::__construct($file);
-        
     }
 
     public function loadData() {
         parent::loadData();
-        
     }
 
     public function getBoxDetails() {
-        
+
         $details = [];
         $details["Size"] = $this->size;
         $details["Offset"] = $this->offset;
@@ -58,9 +32,49 @@ class Mp4a extends \Isolator\Boxes\SampleEntries\AudioSampleEntry {
         $details["Sample Size"] = $this->sampleSize;
         $details["Sample Rate"] = $this->sampleRate;
 
-        
+
 
 
         return $details;
     }
+
+    public function writeToFile() {
+        $this->prepareForWriting();
+        foreach ($this->boxMap as $box) {
+            $box->writeToFile();
+        }
+        $this->finalizeWriting();
+    }
+
+    public function prepareForWriting() {
+
+        $this->offset = ftell($this->file); //Save the file pointer
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, 0); //Write the box size, place holder for now
+        \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
+        
+        //From Sample Entry
+        \Isolator\ByteUtils::padBytes($this->file, 6);
+        \Isolator\ByteUtils::writeUnsignedShort($this->file, $this->dataReferenceIndex);
+        
+        //From Audio Sample Entry
+        \Isolator\ByteUtils::padBytes($this->file, 8);
+        \Isolator\ByteUtils::writeUnsignedShort($this->file, $this->channelCount);
+        \Isolator\ByteUtils::writeUnsignedShort($this->file, $this->sampleSize);
+        \Isolator\ByteUtils::padBytes($this->file, 2);
+        \Isolator\ByteUtils::padBytes($this->file, 2);
+        \Isolator\ByteUtils::writeUnsignedShort($this->file, $this->sampleRate);//pg 161 is wrong its short and the second 2 bits aren't used
+        \Isolator\ByteUtils::padBytes($this->file, 2);
+        //Continue with the rest of the boxes, channel layout should be first
+        
+    }
+
+    public function finalizeWriting() {
+
+        $boxEnd = ftell($this->file); // Save the current position
+        $this->size = $boxEnd - $this->offset;
+        fseek($this->file, $this->offset); //Reset write pointer to beginning of file
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->size); //Overwrite the box size
+        fseek($this->file, $boxEnd); //Finally put the file pointer back at the end of the file
+    }
+
 }

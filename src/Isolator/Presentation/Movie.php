@@ -68,6 +68,9 @@ class Movie {
         $stsd = new \Isolator\Boxes\Stsd($this->file);
         $stbl->addBox($stsd);
         
+        $sampleEntry = new \Isolator\Boxes\SampleEntries\Mp4a($this->file);
+        $stsd->addBox($sampleEntry);
+        
         $stts= new \Isolator\Boxes\Stts($this->file);
         $stbl->addBox($stts);
         

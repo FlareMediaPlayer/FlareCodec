@@ -27,9 +27,9 @@ class AutoLoader {
         // separators with directory separators in the relative class name, append
         // with .php
         $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
-
+        //echo '<pre>' . $class . '</pre>';
         if (file_exists($file)) {
-            require $file;
+            require  $file;
          
         }
     }

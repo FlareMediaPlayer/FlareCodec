@@ -41,9 +41,9 @@ class Tkhd extends \Isolator\FullBox {
 
         fseek($this->file, $this->offset + $this->headerSize);
         $this->version = \Isolator\ByteUtils::readUnsignedByte($this->file);
-        $this->flags["trackEnabled"] = \Isolator\ByteUtils::readUnsignedByte($this->file);
-        $this->flags["trackInMovie"] = \Isolator\ByteUtils::readUnsignedByte($this->file);
-        $this->flags["trackInPreview"] = \Isolator\ByteUtils::readUnsignedByte($this->file);
+        $this->flags[0] = \Isolator\ByteUtils::readUnsignedByte($this->file);
+        $this->flags[1] = \Isolator\ByteUtils::readUnsignedByte($this->file);
+        $this->flags[2] = \Isolator\ByteUtils::readUnsignedByte($this->file);
 
         if ($this->version == 1) {
             $this->creationTime = \Isolator\ByteUtils::readUnsignedLong($this->file);
@@ -80,9 +80,9 @@ class Tkhd extends \Isolator\FullBox {
         $details["Offset"] = $this->offset;
         $details["Version"] = $this->version;
         $details["Flags"] = [
-            "Track Enabled" => $this->flags["trackEnabled"],
-            "Track In Movie" => $this->flags["trackInMovie"],
-            "Track In Preview" => $this->flags["trackInPreview"]
+            "Track Enabled" => $this->flags[0],
+            "Track In Movie" => $this->flags[1],
+            "Track In Preview" => $this->flags[2]
         ];
 
         $details["Creation Time"] = $this->creationTime;

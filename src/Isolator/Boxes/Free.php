@@ -54,9 +54,9 @@ class Free extends \Isolator\Box {
             $totalSize += 4;
             \Isolator\ByteUtils::writeUnsignedInteger($this->file, 1); //Write the box size
             \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
-            \Isolator\ByteUtils::writeUnsignedLong($this->file, $totalSize); //Write the box size
+            \Isolator\ByteUtils::writeUnsignedLong($this->file, $this->size); //Write the box size
         }else{
-            \Isolator\ByteUtils::writeUnsignedInteger($this->file, $totalSize); //Write the box size
+            \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->size); //Write the box size
             \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
         }
 

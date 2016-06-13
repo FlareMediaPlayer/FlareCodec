@@ -8,7 +8,7 @@ namespace Isolator;
 abstract class FullBox extends \Isolator\Box {
     
     protected $version; //1 byte
-    protected $flags = []; // 3 bytes 
+    protected $flags = [0 ,0 ,0]; // 3 bytes 
     
     function __construct($file) {
 

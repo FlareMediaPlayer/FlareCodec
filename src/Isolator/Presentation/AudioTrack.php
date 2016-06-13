@@ -10,8 +10,7 @@ namespace Isolator\Presentation;
 
 class AudioTrack extends \Isolator\Presentation\Track {
 
-    //put your code here
-    private $trak;
+    
     private $tkhd;
     private $boxMap;
     private $mdhd;
@@ -31,11 +30,14 @@ class AudioTrack extends \Isolator\Presentation\Track {
     private $dataMap;
 
     public function __construct($trak) {
+        
         $this->trak = $trak;
         $this->boxMap = $trak->getBoxMap();
         $this->dataMap = [];
         $this->file = $trak->getFile();
         $this->buildDecodeTable();
+       
+        
     }
 
     private function buildDecodeTable() {

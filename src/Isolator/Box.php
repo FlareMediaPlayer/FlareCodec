@@ -304,6 +304,7 @@ abstract class Box {
 
     public function addBox($box) {
         $this->boxMap[] = $box;
+        $box->setContainer($this);
     }
 
     protected function parseBox() {
@@ -426,7 +427,6 @@ abstract class Box {
     
     public function writeToFile(){
         
-
     }
     
     public function calculateSize(){

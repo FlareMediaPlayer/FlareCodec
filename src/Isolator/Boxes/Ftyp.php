@@ -110,7 +110,7 @@ class Ftyp extends \Isolator\Box {
         $this->size = 16 + ($compatibleBrandCount * 4);
 
 
-        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $totalSize); //Write the box size
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file,$this->size); //Write the box size
         \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
         \Isolator\ByteUtils::writeChars($this->file, $this->majorBrand); //Write the brand
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->minorVersion); //Write version

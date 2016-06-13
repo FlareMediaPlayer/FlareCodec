@@ -16,6 +16,8 @@ class Iso {
     private $fileSize;
     private $boxMap;
     private $moov; //Keep direct reference to movie box to not waste time iterating every time
+    private $tempTrack; // Needed for testing, later switch with some sort of abstract container
+    private $movie; //Create a single movie instance.
 
     function __construct($filename) {
 
@@ -23,10 +25,17 @@ class Iso {
         $this->file = fopen($this->filename, "rb+") or die("Unable to open file!");
         $this->fileSize = filesize($filename);
         $this->boxMap = [];
+         //$test = new \Isolator\Boxes\Mdat($this->file);
+        //$this->movie = new \Isolator\Presentation\Movie($this);
+        //$this->movie = new Presentation\nob();
         //$this->loadData();
         //var_dump($this->boxMap);
+        //$this->init();
     }
     
+    function initMovie(){
+        $this->movie = new \Isolator\Presentation\Movie($this);
+    }
     
 
     public function getFileName(){
@@ -152,9 +161,13 @@ class Iso {
         return $this->file;
     }
 
+    public function addTrack($track){
+        $this->movie->addTrack($track);
+    }
 
     public static function RipAudio($inputIso, $outputFile){
         
+       
         if(file_exists ( $outputFile)){
             unlink ($outputFile);
         }
@@ -164,16 +177,11 @@ class Iso {
         
         
         $iso = new Iso($outputFile);
+        $iso->initMovie();
         
         //Need to rethink the constructors
         $ftyp = new \Isolator\Boxes\Ftyp($iso->getFile());
         $ftyp->loadDataFromBox($inputIso->getFtyp());
-        
-        
-        
-        //$moov = new \Isolator\Boxes\Moov($iso->getFile());
-        //$mvhd = new \Isolator\Boxes\Mvhd($iso->getFile());
-        //$mvhd->loadDataFromBox($inputIso->getMvhd());
         
         $iso->addBox($ftyp);
         
@@ -183,11 +191,10 @@ class Iso {
         $ftyp->writeToFile();
         $free->writeToFile();
         
-        //$moov->addBox($mvhd);
-        //$mvhd->setContainer($moov);
-        //$iso->addBox($moov);
         
-        $mdat = new \Isolator\Boxes\Mdat($iso->getFile());
+        $mdat = new \Isolator\Boxes\Mdat($iso->getFile()); //This is what will be used to control movie recording/reading
+        
+        
         $iso->addBox($mdat);
         
         $mdat->prepareForWriting();
@@ -195,20 +202,45 @@ class Iso {
         $audioTracks = $inputIso->getAudioTracks();
         
         foreach ($audioTracks as $track){
+            
             $audioTrack = new \Isolator\Presentation\AudioTrack($track);
             $audioTrack->setOutputFile($outputFile);
             $audioTrack->dumpBinary($iso->getFile()); // Testing for now
+            $iso->addTrack($audioTrack);
+            
+            /*
+             * Temporary
+             */
+            $iso->setTempTrack($track); //Save reference for finalizing
+            /*
+             * Temporary
+             */
         }
         
         $mdat->finalizeWriting();
+        $iso->finalize();
         
         
         return $iso;
         
     }
     
+    public function setTempTrack($track){
+        $this->tempTrack = $track;
+    }
+    
     
     public function finalize(){
+        //Create a Moov Box
+        //$moov = new \Isolator\Boxes\Moov($this->file);
+        //$mvhd = new \Isolator\Boxes\Mvhd($this->file);
+        //$this->addBox($moov);
+        //$moov->addBox($mvhd);
+        //var_dump($this->tempTrack->getBoxByClass('\Isolator\Boxes\Mvhd'));
+        //$mvhd->loadDataFromBox($this->tempTrack->getBoxByClass('\Isolator\Boxes\Mvhd'));
+        
+        //$moov->writeToFile();
+        $this->movie->finalize();
         
     }
     

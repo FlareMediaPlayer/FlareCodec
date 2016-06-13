@@ -24,8 +24,8 @@ class Hdlr extends \Isolator\FullBox {
     const IPSM = "ipsm"; //ipsm
     const MJSM = "mjsm"; //mjsm
 
-    private $handlerType;
-    private $name;
+    private $handlerType = self::NULL_HANDLER;
+    private $name = "SoundHandler"; // Place holder for now
 
     function __construct($file) {
 
@@ -61,6 +61,24 @@ class Hdlr extends \Isolator\FullBox {
 
 
         return $details;
+    }
+    
+    public function writeToFile() {
+        $this->offset = ftell($this->file); //Save the file pointer
+        $this->size = 32 + (strlen($this->name) + 1 );
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->size); //Write the box size place holder for now
+        \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
+        
+        \Isolator\ByteUtils::writeUnsignedByte($this->file, $this->version); //Write the box version
+        \Isolator\ByteUtils::writeUnsignedByte($this->file, $this->flags[0]); //Write the box version
+        \Isolator\ByteUtils::writeUnsignedByte($this->file, $this->flags[1]); //Write the box version
+        \Isolator\ByteUtils::writeUnsignedByte($this->file, $this->flags[2]); //Write the box version //12 bytes so far
+        
+        \Isolator\ByteUtils::padBytes($this->file, 4);
+        \Isolator\ByteUtils::writeChars($this->file, $this->handlerType); //Write the handler type
+        
+        \Isolator\ByteUtils::padBytes($this->file, 12);
+        \Isolator\ByteUtils::writeCString($this->file, $this->name);
     }
 
 }

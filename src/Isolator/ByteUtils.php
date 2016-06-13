@@ -53,6 +53,10 @@ class ByteUtils {
         fwrite($file, $data);
     }
 
+    public static function writeCString($file, $data) {
+        fwrite($file, $data . "\0");
+    }
+    
     public static function readUnsignedByte($file) {
         $dataBuffer = fread($file, 1);
         $dataBuffer = unpack("C*", $dataBuffer);

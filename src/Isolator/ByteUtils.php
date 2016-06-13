@@ -69,11 +69,23 @@ class ByteUtils {
         $dataBuffer = unpack("n", $dataBuffer);
         return $dataBuffer[1];
     }
+    
+    public static function writeUnsignedShort($file, $data) {        
+        $dataBuffer = pack("n", $data);
+        fwrite($file, $dataBuffer);
+    }
 
     public static function skipBytes($file, $num) {
         $currentPosition = ftell($file);
         $newPosition = $currentPosition + $num;
         fseek($file, $newPosition);
+    }
+    
+    public static function padBytes($file, $num) {
+        $dataBuffer = pack("C", 0);
+        for($i = 0 ; $i< $num ; $i++){
+            fwrite($file, $dataBuffer);
+        }
     }
 
     public static function readFixedPoint16_16($file) {
@@ -83,6 +95,12 @@ class ByteUtils {
         $x = pow(2, 16);
         return $dataBuffer[1] / $x;
     }
+    
+    public static function writeFixed16_16($file, $data) {
+        $x = pow(2, 16);
+        $dataBuffer = pack("N", $data * $x);
+        fwrite($file, $dataBuffer);
+    }
 
     public static function readFixedPoint8_8($file) {
 
@@ -90,6 +108,12 @@ class ByteUtils {
         $dataBuffer = unpack("n", $dataBuffer);
         $x = pow(2, 8);
         return $dataBuffer[1] / $x;
+    }
+    
+    public static function writeFixed8_8($file, $data) {
+        $x = pow(2, 8);
+        $dataBuffer = pack("n", $data * $x);
+        fwrite($file, $dataBuffer);
     }
 
     public static function readBytesAsHex($file, $n) {

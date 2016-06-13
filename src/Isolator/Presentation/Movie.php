@@ -69,13 +69,16 @@ class Movie {
         $stbl->addBox($stsd);
         
         $stts= new \Isolator\Boxes\Stts($this->file);
+        $stbl->addBox($stts);
         
         $stsc = new \Isolator\Boxes\Stsc($this->file);
+        $stbl->addBox($stsc);
         
         $stsz = new \Isolator\Boxes\Stsz($this->file);
+        $stbl->addBox($stsz);
         
         $stco = new \Isolator\Boxes\Stco($this->file);
-        
+        $stbl->addBox($stco);
         
         $this->trackMap[] = new \Isolator\Presentation\Track($trak);
         $track->setMovie($this);
@@ -90,6 +93,7 @@ class Movie {
 
     public function finalize() {
         $this->iso->addBox($this->moov);
+        $this->moov->writeToFile();
     }
 
 }

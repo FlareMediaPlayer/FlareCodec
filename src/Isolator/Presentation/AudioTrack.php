@@ -20,18 +20,23 @@ class AudioTrack extends \Isolator\Presentation\Track {
     private $stsz;
     private $stsc;
     private $stco;
+    private $deltaTable;
     private $chunkCount;
     private $chunkOffsetTable;
     private $sampleSizeTable;
     private $chunkTable;
     private $chunkRunTable;
     private $sampleCount;
-    private $dataMap;
+    private $dataMap; //[offset, number of samples, bytes per sample ]  
     private $sampleToChunkMap;
     private $currentSample = 0;
+    private $fullSampleMap; //This is the fully decompressed sample table = [offset, byteCount, delta]
 
     public function __construct($movie) {
 
+        $this->fullSampleMap = [];
+        $this->deltaTable = [];
+        
         $this->movie = $movie;
         $this->file = $this->movie->getFile();
         //We have to build an entire trak, then copy details over if available
@@ -40,53 +45,53 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->trak = new \Isolator\Boxes\Trak($this->file);
         
 
-        $tkhd = new \Isolator\Boxes\Tkhd($this->file);
-        $this->trak->addBox($tkhd);
+        $this->tkhd = new \Isolator\Boxes\Tkhd($this->file);
+        $this->trak->addBox($this->tkhd);
 
-        $mdia = new \Isolator\Boxes\Mdia($this->file);
-        $this->trak->addBox($mdia);
+        $this->mdia = new \Isolator\Boxes\Mdia($this->file);
+        $this->trak->addBox($this->mdia);
 
-        $mdhd = new \Isolator\Boxes\Mdhd($this->file);
-        $mdia->addBox($mdhd);
+        $this->mdhd = new \Isolator\Boxes\Mdhd($this->file);
+        $this->mdia->addBox($this->mdhd);
 
-        $hdlr = new \Isolator\Boxes\Hdlr($this->file);
-        $mdia->addBox($hdlr);
+        $this->hdlr = new \Isolator\Boxes\Hdlr($this->file);
+        $this->mdia->addBox($this->hdlr);
 
-        $minf = new \Isolator\Boxes\Minf($this->file);
-        $mdia->addBox($minf);
+        $this->minf = new \Isolator\Boxes\Minf($this->file);
+        $this->mdia->addBox($this->minf);
 
-        $smhd = new \Isolator\Boxes\Smhd($this->file);
-        $minf->addBox($smhd);
+        $this->smhd = new \Isolator\Boxes\Smhd($this->file);
+        $this->minf->addBox($this->smhd);
 
-        $dinf = new \Isolator\Boxes\Dinf($this->file);
-        $minf->addBox($dinf);
+        $this->dinf = new \Isolator\Boxes\Dinf($this->file);
+        $this->minf->addBox($this->dinf);
 
-        $dref = new \Isolator\Boxes\Dref($this->file);
-        $dinf->addBox($dref);
+        $this->dref = new \Isolator\Boxes\Dref($this->file);
+        $this->dinf->addBox($this->dref);
 
-        $url = new \Isolator\Boxes\Url($this->file);
-        $dref->addBox($url);
+        $this->url = new \Isolator\Boxes\Url($this->file);
+        $this->dref->addBox($this->url);
 
-        $stbl = new \Isolator\Boxes\Stbl($this->file);
-        $minf->addBox($stbl);
+        $this->stbl = new \Isolator\Boxes\Stbl($this->file);
+        $this->minf->addBox($this->stbl);
 
-        $stsd = new \Isolator\Boxes\Stsd($this->file);
-        $stbl->addBox($stsd);
+        $this->stsd = new \Isolator\Boxes\Stsd($this->file);
+        $this->stbl->addBox($this->stsd);
 
-        $sampleEntry = new \Isolator\Boxes\SampleEntries\Mp4a($this->file);
-        $stsd->addBox($sampleEntry);
+        $this->sampleEntry = new \Isolator\Boxes\SampleEntries\Mp4a($this->file);
+        $this->stsd->addBox($this->sampleEntry);
 
-        $stts = new \Isolator\Boxes\Stts($this->file);
-        $stbl->addBox($stts);
+        $this->stts = new \Isolator\Boxes\Stts($this->file);
+        $this->stbl->addBox($this->stts);
 
-        $stsc = new \Isolator\Boxes\Stsc($this->file);
-        $stbl->addBox($stsc);
+        $this->stsc = new \Isolator\Boxes\Stsc($this->file);
+        $this->stbl->addBox($this->stsc);
 
-        $stsz = new \Isolator\Boxes\Stsz($this->file);
-        $stbl->addBox($stsz);
+        $this->stsz = new \Isolator\Boxes\Stsz($this->file);
+        $this->stbl->addBox($this->stsz);
 
-        $stco = new \Isolator\Boxes\Stco($this->file);
-        $stbl->addBox($stco);
+        $this->stco = new \Isolator\Boxes\Stco($this->file);
+        $this->stbl->addBox($this->stco);
     }
 
     public function mapFromTrak($trak) {
@@ -204,7 +209,9 @@ class AudioTrack extends \Isolator\Presentation\Track {
     }
 
     public function writeSample($sample, $sampleMeta){
+        $this->fullSampleMap[] = [ftell($this->file) , $sampleMeta[2] , 1024]; //[offset, bytesPerSample, sampleDelta]
         fwrite($this->file, $sample);
+        
     }
     
     public function setCurrentSample($currentSample){
@@ -213,5 +220,32 @@ class AudioTrack extends \Isolator\Presentation\Track {
 
     public function getSampleCount(){
         return $this->sampleCount;
+    }
+    
+    public function finalize(){
+        $this->encodeDeltaTable();
+  
+        //we first have to encode the 4 tables, stts, stsc, stsz, stco
+        $this->stts->setDeltaTable($this->deltaTable);
+    }
+    
+    private function encodeDeltaTable(){
+        
+        if (count($this->fullSampleMap) == 0){
+            return [ 0 => 0];
+        }
+        
+        $delta = $this->fullSampleMap[0][2];
+        $deltaCount = 1;
+        for($i = 1; $i < count($this->fullSampleMap); $i++){
+            if($delta == $this->fullSampleMap[$i][2]){
+                $deltaCount++;
+            }else{
+                $this->deltaTable[] = [$deltaCount , $delta];
+                $delta = $this->fullSampleMap[$i][2];
+                $deltaCount = 1;
+            }
+        }
+        $this->deltaTable[] = [$deltaCount , $delta];
     }
 }

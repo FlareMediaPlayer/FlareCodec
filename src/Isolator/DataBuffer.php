@@ -28,11 +28,13 @@ class DataBuffer {
     }
 
     public function readSample(){
+        
         $this->sampleMeta = $this->inputTrack->readSample($this->sample);
+        
     }
     
     public function writeSample(){
-        
+        //For this we need a byteCount, and sampleDelta
         $this->outputTrack->writeSample($this->sample, $this->sampleMeta);
     }
     

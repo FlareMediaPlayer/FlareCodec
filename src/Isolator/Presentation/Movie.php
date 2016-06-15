@@ -43,7 +43,9 @@ class Movie {
     }
 
     public function finalize() {
-        
+        foreach($this->trackMap as $track){
+            $track->finalize();
+        }
         $this->iso->addBox($this->moov);
         $this->moov->writeToFile();
         

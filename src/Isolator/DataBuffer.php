@@ -32,8 +32,8 @@ class DataBuffer {
     }
     
     public function writeSample(){
-        var_dump(get_class($this->outputTrack));
-        //$this->outputTrack->writeSample($this->sample, $this->sampleMeta);
+        
+        $this->outputTrack->writeSample($this->sample, $this->sampleMeta);
     }
     
 }

@@ -18,7 +18,7 @@ class Movie {
     private $iso;
 
     public function __construct($iso) {
-
+        //This part needs to be redone, need to have way to load a blank one vs one from file;
         $this->iso = $iso;
         $this->file = $iso->getFile();
         $this->moov = new \Isolator\Boxes\Moov($this->file); //Generate moov box
@@ -36,69 +36,10 @@ class Movie {
         $this->trackCount++;
     }
     
-    public function addTrack($track = null) {
-        //We have to build an entire trak, then copy details over if available
-        //For now this one is an audio track
-        
-        $trak = new \Isolator\Boxes\Trak($this->file);
-        $this->moov->addBox($trak);
-        
-        $tkhd = new \Isolator\Boxes\Tkhd($this->file);
-        $trak->addBox($tkhd);
-        
-        $mdia = new \Isolator\Boxes\Mdia($this->file);
-        $trak->addBox($mdia);
-        
-        $mdhd = new \Isolator\Boxes\Mdhd($this->file);
-        $mdia->addBox($mdhd);
-        
-        $hdlr = new \Isolator\Boxes\Hdlr($this->file);
-        $mdia->addBox($hdlr);
-        
-        $minf = new \Isolator\Boxes\Minf($this->file);
-        $mdia->addBox($minf);
-        
-        $smhd = new \Isolator\Boxes\Smhd($this->file);
-        $minf->addBox($smhd);
-        
-        $dinf = new \Isolator\Boxes\Dinf($this->file);
-        $minf->addBox($dinf);
-        
-        $dref = new \Isolator\Boxes\Dref($this->file);
-        $dinf->addBox($dref);
-        
-        $url = new \Isolator\Boxes\Url($this->file);
-        $dref->addBox($url);
-        
-        $stbl = new \Isolator\Boxes\Stbl($this->file);
-        $minf->addBox($stbl);
-        
-        $stsd = new \Isolator\Boxes\Stsd($this->file);
-        $stbl->addBox($stsd);
-        
-        $sampleEntry = new \Isolator\Boxes\SampleEntries\Mp4a($this->file);
-        $stsd->addBox($sampleEntry);
-        
-        $stts= new \Isolator\Boxes\Stts($this->file);
-        $stbl->addBox($stts);
-        
-        $stsc = new \Isolator\Boxes\Stsc($this->file);
-        $stbl->addBox($stsc);
-        
-        $stsz = new \Isolator\Boxes\Stsz($this->file);
-        $stbl->addBox($stsz);
-        
-        $stco = new \Isolator\Boxes\Stco($this->file);
-        $stbl->addBox($stco);
-        
-        $this->trackMap[] = new \Isolator\Presentation\Track($trak);
-        $track->setMovie($this);
-        
-        
-        
+    public function addTrack($track){
+        $this->trackMap[] = $track;
+        $this->moov->addBox($track->getTrak()); //Connect the trak to the moov box
         $this->trackCount++;
-
-        
     }
 
     public function finalize() {
@@ -109,15 +50,16 @@ class Movie {
     }
     
     public static function createNewAudioTrack($movie){
-        $newTrack = \Isolator\Presentation\AudioTrack($movie);
-        var_dump(get_class($newTrack));
+        $newTrack = new \Isolator\Presentation\AudioTrack($movie);
+        $movie->addTrack($newTrack); // Connect the newly added track to the movie
         return $newTrack;
     }
     
     public static function createMappedAudioTrack($movie, $trak){
-        $track = new \Isolator\Presentation\AudioTrack($movie);
-        $track->mapFromTrak($trak);
-        return $track;
+        $newTrack = new \Isolator\Presentation\AudioTrack($movie);
+        $newTrack->mapFromTrak($trak); //Copy the stats over from the boxes
+        $movie->addTrack($newTrack); // Connect the newly added track to the movie
+        return $newTrack;
     }
     
     public function getFile(){

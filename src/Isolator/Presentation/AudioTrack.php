@@ -204,7 +204,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
     }
 
     public function writeSample($sample, $sampleMeta){
-        
+        fwrite($this->file, $sample);
     }
     
     public function setCurrentSample($currentSample){

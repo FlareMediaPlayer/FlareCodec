@@ -202,23 +202,23 @@ class Iso {
         
         $audioTracks = $inputIso->getAudioTracks();
         $dataBuffer = new \Isolator\DataBuffer();
-        
+
         foreach ($audioTracks as $track){
             
             //$audioTrack = new \Isolator\Presentation\AudioTrack($track);
             $audioTrack = $inputIso->addMappedAudioTrack($track);
             //$audioTrack->setOutputFile($outputFile);
             //$audioTrack->dumpBinary($iso->getFile()); // Testing for now
-            $newAudioTrack = $iso->addNewTrack();
+            $newAudioTrack = $iso->addNewAudioTrack();
             
             //now we connect the input iso to the newly made iso
             $dataBuffer->setInputTrack($audioTrack);
             $dataBuffer->setOutputTrack($newAudioTrack); // We would like to write to the new audio track;
-            var_dump(get_class($newAudioTrack));
+            //var_dump(get_class($newAudioTrack));
       
             for($i = 0; $i < $audioTrack->getSampleCount(); $i++ ){
                 $dataBuffer->readSample();
-                //$dataBuffer->writeSample();
+                $dataBuffer->writeSample();
             }
         }
         
@@ -242,10 +242,12 @@ class Iso {
     }
     
     public function addMappedAudioTrack($trak){
+        
         return \Isolator\Presentation\Movie::createMappedAudioTrack($this->movie, $trak);
     }
     
     public function addNewAudioTrack(){
+
         return \Isolator\Presentation\Movie::createNewAudioTrack($this->movie);
     }
     

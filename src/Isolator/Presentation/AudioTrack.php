@@ -31,19 +31,25 @@ class AudioTrack extends \Isolator\Presentation\Track {
     private $sampleToChunkMap;
     private $currentSample = 0;
     private $fullSampleMap; //This is the fully decompressed sample table = [offset, byteCount, delta]
+    private $sampleRate = 4800; // for now this is usually the sample rate for movies
+    private $sampleToChunkTable;
+    private $currentChunk = 0;
+    private $currentWriteLocation;
+    private $consecutiveWriteLocation;
 
     public function __construct($movie) {
 
         $this->fullSampleMap = [];
         $this->deltaTable = [];
-        
+        $this->sampleToChunkTable = [];
+
         $this->movie = $movie;
         $this->file = $this->movie->getFile();
         //We have to build an entire trak, then copy details over if available
         //For now this one is an audio track
 
         $this->trak = new \Isolator\Boxes\Trak($this->file);
-        
+
 
         $this->tkhd = new \Isolator\Boxes\Tkhd($this->file);
         $this->trak->addBox($this->tkhd);
@@ -159,10 +165,10 @@ class AudioTrack extends \Isolator\Presentation\Track {
                 $currentIndex++;
             }
         }
-        
+
         //Finally build the table that maps each sample to a chunk for random access of any sample
-        for($i = 0; $i < count($this->dataMap); $i++){
-            for($n = 0; $n < $this->dataMap[$i][1] ; $n++){
+        for ($i = 0; $i < count($this->dataMap); $i++) {
+            for ($n = 0; $n < $this->dataMap[$i][1]; $n++) {
                 $this->sampleToChunkMap[] = $i;
             }
         }
@@ -197,55 +203,87 @@ class AudioTrack extends \Isolator\Presentation\Track {
         //
         return $this->trak;
     }
-    
+
     public function readSample(&$sample) {
         $chunk = $this->sampleToChunkMap[$this->currentSample]; //Find which chunk it belongs to
         fseek($this->file, $this->dataMap[$chunk][0]);
         $sample = fread($this->file, $this->dataMap[$chunk][2]);
-        
+
         $this->currentSample++;
         return $this->dataMap[$chunk];
-        
     }
 
-    public function writeSample($sample, $sampleMeta){
-        $this->fullSampleMap[] = [ftell($this->file) , $sampleMeta[2] , 1024]; //[offset, bytesPerSample, sampleDelta]
+    public function writeSample($sample, $sampleMeta) {
+
+        $this->currentWriteLocation = ftell($this->file); //record the current write location
+        if ($this->currentSample > 0) {
+            if ($this->currentWriteLocation != $this->consecutiveWriteLocation) {
+                $this->currentChunk++;
+            }
+        }
+        $this->consecutiveWriteLocation = $this->currentWriteLocation + $sampleMeta[2];
+
+        $this->fullSampleMap[] = [ftell($this->file), $sampleMeta[2], 1024, $this->currentChunk]; //[offset, bytesPerSample, sampleDelta, chunk]
+        $this->chunkRunTable[] = $this->currentChunk;
         fwrite($this->file, $sample);
-        
+        $this->currentSample++; // advance the current sample
     }
-    
-    public function setCurrentSample($currentSample){
+
+    public function setCurrentSample($currentSample) {
         $this->currentSample = $currentSample;
     }
 
-    public function getSampleCount(){
+    public function getSampleCount() {
         return $this->sampleCount;
     }
-    
-    public function finalize(){
+
+    public function finalize() {
+
         $this->encodeDeltaTable();
-  
+        $this->encodeChunkTable();
+        var_dump($this->chunkTable);
+
         //we first have to encode the 4 tables, stts, stsc, stsz, stco
         $this->stts->setDeltaTable($this->deltaTable);
+        $this->stsc->setChunkTable($this->chunkTable);
     }
-    
-    private function encodeDeltaTable(){
-        
-        if (count($this->fullSampleMap) == 0){
+
+    private function encodeDeltaTable() {
+
+        if (count($this->fullSampleMap) == 0) {
             return [ 0 => 0];
         }
-        
+
         $delta = $this->fullSampleMap[0][2];
         $deltaCount = 1;
-        for($i = 1; $i < count($this->fullSampleMap); $i++){
-            if($delta == $this->fullSampleMap[$i][2]){
+        for ($i = 1; $i < count($this->fullSampleMap); $i++) {
+            if ($delta == $this->fullSampleMap[$i][2]) {
                 $deltaCount++;
-            }else{
-                $this->deltaTable[] = [$deltaCount , $delta];
+            } else {
+                $this->deltaTable[] = [$deltaCount, $delta];
                 $delta = $this->fullSampleMap[$i][2];
                 $deltaCount = 1;
             }
         }
-        $this->deltaTable[] = [$deltaCount , $delta];
+        $this->deltaTable[] = [$deltaCount, $delta];
     }
+
+    private function encodeChunkTable() {
+        //NEED TO CALCULATE CHUNK RUNS FIRST
+        $firstChunk = $this->chunkRunTable[0];
+        $samplesPerChunk = 1;
+
+        $sampleDescriptionIndex = 1; //hardcode for now, but usually sample type shouldnt change
+        for ($i = 1; $i < count($this->chunkRunTable); $i++) {
+            if ($firstChunk == $this->chunkRunTable[$i]) {
+                $samplesPerChunk++;
+            } else {
+                $this->chunkTable[] = [$firstChunk + 1, $samplesPerChunk, $sampleDescriptionIndex];
+                $firstChunk = $this->chunkRunTable[$i];
+                $samplesPerChunk = 1;
+            }
+        }
+        $this->chunkTable[] = [$firstChunk + 1, $samplesPerChunk, $sampleDescriptionIndex];
+    }
+
 }

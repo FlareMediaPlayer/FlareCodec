@@ -30,7 +30,8 @@ class Iso {
         //$this->movie = new Presentation\nob();
         //$this->loadData();
         //var_dump($this->boxMap);
-        //$this->init();
+        //$this->initMovie();
+        $this->movie = new \Isolator\Presentation\Movie($this); //Initialize the presentation holder
     }
     
     function initMovie(){
@@ -161,13 +162,13 @@ class Iso {
         return $this->file;
     }
 
-    public function addTrack($track){
-        $this->movie->addTrack($track);
+    public function addNewTrack(){
+        $this->movie->addNewTrack();
     }
 
     public static function RipAudio($inputIso, $outputFile){
         
-       
+       //var_dump(get_class($inputIsovar));
         if(file_exists ( $outputFile)){
             unlink ($outputFile);
         }
@@ -177,7 +178,7 @@ class Iso {
         
         
         $iso = new Iso($outputFile);
-        $iso->initMovie();
+        //$iso->initMovie();
         
         //Need to rethink the constructors
         $ftyp = new \Isolator\Boxes\Ftyp($iso->getFile());
@@ -200,21 +201,25 @@ class Iso {
         $mdat->prepareForWriting();
         
         $audioTracks = $inputIso->getAudioTracks();
+        $dataBuffer = new \Isolator\DataBuffer();
         
         foreach ($audioTracks as $track){
             
-            $audioTrack = new \Isolator\Presentation\AudioTrack($track);
-            $audioTrack->setOutputFile($outputFile);
-            $audioTrack->dumpBinary($iso->getFile()); // Testing for now
-            $iso->addTrack($audioTrack);
+            //$audioTrack = new \Isolator\Presentation\AudioTrack($track);
+            $audioTrack = $inputIso->addMappedAudioTrack($track);
+            //$audioTrack->setOutputFile($outputFile);
+            //$audioTrack->dumpBinary($iso->getFile()); // Testing for now
+            $newAudioTrack = $iso->addNewTrack();
             
-            /*
-             * Temporary
-             */
-            $iso->setTempTrack($track); //Save reference for finalizing
-            /*
-             * Temporary
-             */
+            //now we connect the input iso to the newly made iso
+            $dataBuffer->setInputTrack($audioTrack);
+            $dataBuffer->setOutputTrack($newAudioTrack); // We would like to write to the new audio track;
+            var_dump(get_class($newAudioTrack));
+      
+            for($i = 0; $i < $audioTrack->getSampleCount(); $i++ ){
+                $dataBuffer->readSample();
+                //$dataBuffer->writeSample();
+            }
         }
         
         $mdat->finalizeWriting();
@@ -231,19 +236,17 @@ class Iso {
     
     
     public function finalize(){
-        //Create a Moov Box
-        //$moov = new \Isolator\Boxes\Moov($this->file);
-        //$mvhd = new \Isolator\Boxes\Mvhd($this->file);
-        //$this->addBox($moov);
-        //$moov->addBox($mvhd);
-        //var_dump($this->tempTrack->getBoxByClass('\Isolator\Boxes\Mvhd'));
-        //$mvhd->loadDataFromBox($this->tempTrack->getBoxByClass('\Isolator\Boxes\Mvhd'));
-        
-        //$moov->writeToFile();
+
         $this->movie->finalize();
         
     }
     
-   
+    public function addMappedAudioTrack($trak){
+        return \Isolator\Presentation\Movie::createMappedAudioTrack($this->movie, $trak);
+    }
+    
+    public function addNewAudioTrack(){
+        return \Isolator\Presentation\Movie::createNewAudioTrack($this->movie);
+    }
     
 }

@@ -17,9 +17,9 @@ class Track {
     protected $movie; // Reference to the movie container;
     
     public function setMovie($movie) {
+        
         $this->movie = $movie;
          
-        
     }
     
     public function getTrak(){

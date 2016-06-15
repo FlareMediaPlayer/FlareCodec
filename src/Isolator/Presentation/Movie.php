@@ -28,6 +28,14 @@ class Movie {
         
     }
 
+    public function addNewTrack(){
+        $newTrack = new \Isolator\Presentation\AudioTrack($this);
+        $this->trackMap[] = $newTrack;
+        //var_dump(get_class($newTrack->getTrak()));
+        $this->moov->addBox($newTrack->getTrak()); //Connect the trac to the moov box
+        $this->trackCount++;
+    }
+    
     public function addTrack($track = null) {
         //We have to build an entire trak, then copy details over if available
         //For now this one is an audio track
@@ -89,8 +97,7 @@ class Movie {
         
         
         $this->trackCount++;
-        //var_dump($track->getTrak());
-        //$this->moov->addBox($track->getTrak());
+
         
     }
 
@@ -99,6 +106,22 @@ class Movie {
         $this->iso->addBox($this->moov);
         $this->moov->writeToFile();
         
+    }
+    
+    public static function createNewAudioTrack($movie){
+        $newTrack = \Isolator\Presentation\AudioTrack($movie);
+        var_dump(get_class($newTrack));
+        return $newTrack;
+    }
+    
+    public static function createMappedAudioTrack($movie, $trak){
+        $track = new \Isolator\Presentation\AudioTrack($movie);
+        $track->mapFromTrak($trak);
+        return $track;
+    }
+    
+    public function getFile(){
+        return $this->file;
     }
 
 }

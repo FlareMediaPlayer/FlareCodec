@@ -19,7 +19,8 @@ class Edts extends \Isolator\Box {
     }
     
     public function loadData() {
-
+        $this->loadChildBoxes();
+/*
         $headerLength = 8;
         $internalOffset = $this->offset + $headerLength;
 
@@ -34,22 +35,24 @@ class Edts extends \Isolator\Box {
             
 
 
-            if (array_key_exists($boxType, \Isolator\Box::$boxTable)) {
+            //if (array_key_exists($boxType, \Isolator\Box::$boxTable)) {
 
 
-                $newBox = \Isolator\Box::$boxTable[$boxType]->newInstance($this->file);
+                $newBox = //\Isolator\Box::$boxTable[$boxType]->newInstance($this->file);
                 $newBox->container = $this;
                 $newBox->setSize($boxSize);
                 $newBox->setOffset($internalOffset);
                 $newBox->loadData();
                 $this->boxMap[] = $newBox;
                 
-            }
+            //}
 
 
 
             $internalOffset += $boxSize;
         } while (($internalOffset - $this->offset ) < $this->size);
+ * */
+ 
     }
 
 }

@@ -1,25 +1,22 @@
 <?php
 
+
 namespace Isolator\Boxes;
 
 /**
- * Description of Esds
+ * Description of Unknown
  *
  * @author Brian Parra
  */
-class Esds extends \Isolator\Box{
-
-    private $EsDescriptor;
-    
+class Unknown extends \Isolator\Box{
+    //put your code here
     function __construct($file) {
 
-        $this->boxType = \Isolator\Box::ESDS;
+        $this->boxType = "Unknown";
         parent::__construct($file);
+    }
+    
+    public function loadData() {
         
     }
-
-    public function loadData() {
-        $this->readHeader();
-    }
-
 }

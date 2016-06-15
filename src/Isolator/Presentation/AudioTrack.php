@@ -43,6 +43,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->sampleSizeTable = [];
         $this->deltaTable = [];
         $this->sampleToChunkTable = [];
+        $this->chunkOffsetTable = [];
 
         $this->movie = $movie;
         $this->file = $this->movie->getFile();
@@ -220,7 +221,11 @@ class AudioTrack extends \Isolator\Presentation\Track {
         if ($this->currentSample > 0) {
             if ($this->currentWriteLocation != $this->consecutiveWriteLocation) {
                 $this->currentChunk++;
+                $this->chunkOffsetTable[] = $this->currentWriteLocation;
             }
+        }else{
+            //Record the offset to the first chunk
+            $this->chunkOffsetTable[] = $this->currentWriteLocation;
         }
         $this->consecutiveWriteLocation = $this->currentWriteLocation + $sampleMeta[2];
 
@@ -248,6 +253,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->stts->setDeltaTable($this->deltaTable);
         $this->stsc->setChunkTable($this->chunkTable);
         $this->stsz->setSampleSizeTable($this->sampleSizeTable);
+        $this->stco->setChunkOffsetTable($this->chunkOffsetTable);
     }
 
     private function encodeDeltaTable() {

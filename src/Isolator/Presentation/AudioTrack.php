@@ -40,6 +40,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
     public function __construct($movie) {
 
         $this->fullSampleMap = [];
+        $this->sampleSizeTable = [];
         $this->deltaTable = [];
         $this->sampleToChunkTable = [];
 
@@ -241,11 +242,12 @@ class AudioTrack extends \Isolator\Presentation\Track {
 
         $this->encodeDeltaTable();
         $this->encodeChunkTable();
-        var_dump($this->chunkTable);
+        $this->encodeSampleSizeTable();
 
         //we first have to encode the 4 tables, stts, stsc, stsz, stco
         $this->stts->setDeltaTable($this->deltaTable);
         $this->stsc->setChunkTable($this->chunkTable);
+        $this->stsz->setSampleSizeTable($this->sampleSizeTable);
     }
 
     private function encodeDeltaTable() {
@@ -284,6 +286,13 @@ class AudioTrack extends \Isolator\Presentation\Track {
             }
         }
         $this->chunkTable[] = [$firstChunk + 1, $samplesPerChunk, $sampleDescriptionIndex];
+    }
+    
+    
+    private function encodeSampleSizeTable() {
+        for ($i = 0; $i < count($this->fullSampleMap); $i++) {
+            $this->sampleSizeTable[] = $this->fullSampleMap[$i][1];
+        }
     }
 
 }

@@ -11,7 +11,7 @@ class Mvhd extends \Isolator\FullBox {
 
     private $creationTime = 0;
     private $modificationTime = 0;
-    private $timeScale = 0;
+    private $timeScale = 1000;
     private $duration = 0;
     private $rate = 1; //0x00010000
     private $volume = 1; //0x0100 always a short

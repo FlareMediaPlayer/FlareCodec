@@ -21,4 +21,8 @@ abstract class SampleEntry extends \Isolator\Box{
         $this->dataReferenceIndex = \Isolator\ByteUtils::readUnsignedShort($this->file);
     }
     
+    public function setDataReferenceIndex($index){
+        $this->dataReferenceIndex = $index;
+    }
+    
 }

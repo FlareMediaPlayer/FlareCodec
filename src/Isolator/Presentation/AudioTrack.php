@@ -94,6 +94,11 @@ class AudioTrack extends \Isolator\Presentation\Track {
 
         $this->sampleEntry = new \Isolator\Boxes\SampleEntries\Mp4a($this->file);
         $this->sampleEntry->setSampleRate($this->sampleRate);
+        $this->sampleEntry->setDataReferenceIndex(1);
+        
+        $this->esds = new \Isolator\Boxes\Esds($this->file);
+        $this->sampleEntry->addBox($this->esds);
+        
         $this->stsd->addBox($this->sampleEntry);
 
         $this->stts = new \Isolator\Boxes\Stts($this->file);
@@ -323,6 +328,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->mdhd->setTimeScale($this->sampleRate);
         $this->mdhd->setDuration($this->duration);
         $this->tkhd->setDuration($this->durationInRealTime);
+        $this->tkhd->setTrackID($this->trackID);
         
         $this->encodeDeltaTable();
         $this->encodeChunkTable();
@@ -383,5 +389,9 @@ class AudioTrack extends \Isolator\Presentation\Track {
 
     public function getDurationInRealTime(){
         return $this->durationInRealTime;
+    }
+    
+    public function setTrackID($ID){
+        $this->trackID = $ID;
     }
 }

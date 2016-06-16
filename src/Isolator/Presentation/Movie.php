@@ -44,16 +44,20 @@ class Movie {
 
     public function finalize() {
         $duration = 0;
+        $trackCount = 1;
         foreach($this->trackMap as $track){
             
+            $track->setTrackId($trackCount);
             $track->finalize();
             if($track->getDurationInRealTime() > $duration){
                 $duration = $track->getDurationInRealTime();
             }
             
+            $trackCount++;
         }
         $this->iso->addBox($this->moov);
         $this->mvhd->setDuration($duration);
+        $this->mvhd->setNextTrackID($this->trackCount+1);
         
         $this->moov->writeToFile();
         

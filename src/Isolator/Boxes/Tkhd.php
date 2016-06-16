@@ -162,4 +162,8 @@ class Tkhd extends \Isolator\FullBox {
     public function setVolume($volume){
         $this->volume = $volume;
     }
+    
+    public function setTrackID($ID){
+        $this->trackID = $ID;
+    }
 }

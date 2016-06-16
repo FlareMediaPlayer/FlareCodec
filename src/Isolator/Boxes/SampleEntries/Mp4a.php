@@ -9,7 +9,7 @@ namespace Isolator\Boxes\SampleEntries;
  */
 class Mp4a extends \Isolator\Boxes\SampleEntries\AudioSampleEntry {
 
-    //put your code here
+  
     private $esdBox;
 
     function __construct($file) {
@@ -47,7 +47,7 @@ class Mp4a extends \Isolator\Boxes\SampleEntries\AudioSampleEntry {
     }
 
     public function prepareForWriting() {
-
+        var_dump($this->dataReferenceIndex);
         $this->offset = ftell($this->file); //Save the file pointer
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, 0); //Write the box size, place holder for now
         \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type

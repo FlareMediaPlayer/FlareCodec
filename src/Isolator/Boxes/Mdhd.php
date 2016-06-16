@@ -69,8 +69,6 @@ class Mdhd extends \Isolator\FullBox {
     public function writeToFile(){
         
         $this->offset = ftell($this->file); //Save the file pointer
-        
-        $this->offset = ftell($this->file); //Save the file pointer
         $this->size = 32; //expand if version 1
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->size); //Write the box size place holder for now
         \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
@@ -85,7 +83,7 @@ class Mdhd extends \Isolator\FullBox {
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->timescale);
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->duration);
         
-        \Isolator\ByteUtils::writeUnsignedShort($this->file, 0); // placeholder for language
+        \Isolator\ByteUtils::writeUnsignedShort($this->file, 21956); // placeholder for language
         
         \Isolator\ByteUtils::padBytes($this->file, 2); //Pad 2 bytes
 

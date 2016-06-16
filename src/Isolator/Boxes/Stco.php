@@ -66,7 +66,7 @@ class Stco extends \Isolator\FullBox {
 
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->entryCount);
         for ($i = 0; $i < $this->entryCount; $i++) {
-            \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->chunkOffsetTable[$i][0]);
+            \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->chunkOffsetTable[$i]);
         }
     }
 

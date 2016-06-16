@@ -39,7 +39,15 @@ class Mdhd extends \Isolator\FullBox {
         $langTemp = \Isolator\ByteUtils::readBytesAsHex($this->file, 2);
         
     }
+    
+    public function setTimeScale($timeScale){
+        $this->timescale = $timeScale;
+    }
 
+    public function setDuration($duration){
+        $this->duration = $duration;
+    }
+    
     public function getBoxDetails() {
 
         $details = [];

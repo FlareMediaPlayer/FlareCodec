@@ -157,4 +157,8 @@ class Mvhd extends \Isolator\FullBox {
             \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->matrix[$i]);
         }
     }
+    
+    public function setDuration($duration){
+        $this->duration = $duration;
+    }
 }

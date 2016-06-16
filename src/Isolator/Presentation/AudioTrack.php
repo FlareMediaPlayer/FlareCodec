@@ -31,11 +31,14 @@ class AudioTrack extends \Isolator\Presentation\Track {
     private $sampleToChunkMap;
     private $currentSample = 0;
     private $fullSampleMap; //This is the fully decompressed sample table = [offset, byteCount, delta]
-    private $sampleRate = 4800; // for now this is usually the sample rate for movies
+    private $sampleRate = 48000; // for now this is usually the sample rate for movies
     private $sampleToChunkTable;
     private $currentChunk = 0;
     private $currentWriteLocation;
     private $consecutiveWriteLocation;
+    private $duration = 0;
+    private $durationInRealTime = 0;
+    private $expandedDataTable;
 
     public function __construct($movie) {
 
@@ -44,6 +47,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->deltaTable = [];
         $this->sampleToChunkTable = [];
         $this->chunkOffsetTable = [];
+        $this->expandedDataTable = [];
 
         $this->movie = $movie;
         $this->file = $this->movie->getFile();
@@ -54,6 +58,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
 
 
         $this->tkhd = new \Isolator\Boxes\Tkhd($this->file);
+        $this->tkhd->setVolume(1);
         $this->trak->addBox($this->tkhd);
 
         $this->mdia = new \Isolator\Boxes\Mdia($this->file);
@@ -63,6 +68,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->mdia->addBox($this->mdhd);
 
         $this->hdlr = new \Isolator\Boxes\Hdlr($this->file);
+        $this->hdlr->setHandlerType(\Isolator\Boxes\Hdlr::SOUN);
         $this->mdia->addBox($this->hdlr);
 
         $this->minf = new \Isolator\Boxes\Minf($this->file);
@@ -87,6 +93,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->stbl->addBox($this->stsd);
 
         $this->sampleEntry = new \Isolator\Boxes\SampleEntries\Mp4a($this->file);
+        $this->sampleEntry->setSampleRate($this->sampleRate);
         $this->stsd->addBox($this->sampleEntry);
 
         $this->stts = new \Isolator\Boxes\Stts($this->file);
@@ -140,17 +147,59 @@ class AudioTrack extends \Isolator\Presentation\Track {
         for ($i = 0; $i < $this->chunkCount; $i++) {
             $this->dataMap[$i][0] = $this->chunkOffsetTable[$i];
         }
-
-
-        //Now decode the chunkTable
-        for ($i = 1; $i < $this->chunkTableEntryCount; $i++) {
-
-            $this->chunkRunTable[$i - 1] = $this->chunkTable[$i][0] - $this->chunkTable[$i - 1][0];
+        
+        //FULL DATA TABLE
+        for ($i = 0; $i < $this->sampleCount; $i++) {
+            $this->expandedDataTable[$i][0] = $this->sampleSizeTable[$i]; //bytes per sample
         }
 
-        $this->chunkRunTable[] = $this->chunkCount - $this->chunkTable[$this->chunkTableEntryCount - 1][0];
+        //Now decode the chunkTable
+        //Chunk run table for size = 1 wont work!!
+        for ($i = 1; $i < $this->chunkTableEntryCount; $i++) {
 
+            $this->chunkRunTable[$i - 1] = [
+                $this->chunkTable[$i][0] - $this->chunkTable[$i - 1][0],
+                $this->chunkTable[$i-1][1],
+                $this->chunkTable[$i-1][2] 
+                    ]; //Num of chunks that are the same, samples/chunk, desc index
+        }
+        
+        $this->chunkRunTable[] = [
+                $this->chunkCount - $this->chunkTable[$this->chunkTableEntryCount - 1][0],
+                $this->chunkTable[$this->chunkTableEntryCount - 1][1],
+                $this->chunkTable[$this->chunkTableEntryCount - 1][2] 
+                    ]; //Num of chunks that are the same, samples/chunk, desc index
 
+        $currentSample = 0;
+        $currentChunk = 0;
+        $offset = 0; 
+        $tempDelta = 1024;
+        
+        for ($i = 0; $i < count($this->chunkRunTable); $i++) {
+           
+            for($n = 0 ;$n < $this->chunkRunTable[$i][0]; $n++){ //each one of these chunks is the same num of samples
+                
+                
+                $offset = $this->chunkOffsetTable[$currentChunk]; //offset to the beginning of each chunk
+                
+                for($x = 0; $x < $this->chunkRunTable[$i][1]; $x++){
+                    $this->expandedDataTable[$currentSample][1] = $offset; // the overall offset
+                    $this->expandedDataTable[$currentSample][2] = $i; // the chunk that it belongs to
+                    $this->expandedDataTable[$currentSample][3] = $this->chunkRunTable[$i][2]; // desc
+                    $this->expandedDataTable[$currentSample][4] = $tempDelta;
+                    
+                    
+                    $offset+= $this->expandedDataTable[$currentSample][0];
+                    $currentSample++;
+                }
+                
+                $currentChunk++;
+            }
+        }
+        //var_dump($test);
+        //var_dump($this->fullSampleMap);
+        
+ /*       
         //Now finish building the dataMapping
         $currentIndex = 0;
         $currentSampleIndex = 0;
@@ -174,18 +223,11 @@ class AudioTrack extends \Isolator\Presentation\Track {
                 $this->sampleToChunkMap[] = $i;
             }
         }
+ * 
+ */
     }
 
-    public function dumpBinary($outputFile) {
-        //Lets Try Dumping raw binary to file
-        for ($i = 0; $i < count($this->dataMap); $i++) {
-
-            fseek($this->file, $this->dataMap[$i][0]);
-
-            $data = fread($this->file, $this->dataMap[$i][2]);
-            fwrite($outputFile, $data);
-        }
-    }
+    
 
     public function getSample($num) {
 
@@ -206,17 +248,47 @@ class AudioTrack extends \Isolator\Presentation\Track {
         return $this->trak;
     }
 
-    public function readSample(&$sample) {
-        $chunk = $this->sampleToChunkMap[$this->currentSample]; //Find which chunk it belongs to
-        fseek($this->file, $this->dataMap[$chunk][0]);
-        $sample = fread($this->file, $this->dataMap[$chunk][2]);
+    public function dumpBinary($outputFile) {
+        //Lets Try Dumping raw binary to file
+        
+        //var_dump(count($this->dataMap));
+        //var_dump($this->sampleCount);
+        /*
+        for ($i = 0; $i < count($this->dataMap); $i++) {
 
+            fseek($this->file, $this->dataMap[$i][0]);
+
+            $data = fread($this->file, $this->dataMap[$i][2]);
+            fwrite($outputFile, $data);
+            
+        }
+         * */
+        
+         for ($i = 0; $i < count($this->expandedDataTable); $i++) {
+
+            fseek($this->file, $this->expandedDataTable[$i][1]);
+
+            $data = fread($this->file, $this->expandedDataTable[$i][0]);
+            fwrite($outputFile, $data);
+            
+        }
+    }
+    
+    public function readSample(&$sample) {
+        //$chunk = $this->sampleToChunkMap[$this->currentSample]; //Find which chunk it belongs to
+        //fseek($this->file, $this->dataMap[$chunk][0]);
+        //$sample = fread($this->file, $this->dataMap[$chunk][2]);
+
+        //$this->currentSample++;
+        fseek($this->file, $this->expandedDataTable[$this->currentSample][1]);
+        $sample = fread($this->file, $this->expandedDataTable[$this->currentSample][0]);
+        $metaData = $this->expandedDataTable[$this->currentSample]; 
         $this->currentSample++;
-        return $this->dataMap[$chunk];
+        return $metaData;
     }
 
     public function writeSample($sample, $sampleMeta) {
-
+        $sampleDelta = 1024; //Need to pull this from file eventually
         $this->currentWriteLocation = ftell($this->file); //record the current write location
         if ($this->currentSample > 0) {
             if ($this->currentWriteLocation != $this->consecutiveWriteLocation) {
@@ -227,9 +299,11 @@ class AudioTrack extends \Isolator\Presentation\Track {
             //Record the offset to the first chunk
             $this->chunkOffsetTable[] = $this->currentWriteLocation;
         }
-        $this->consecutiveWriteLocation = $this->currentWriteLocation + $sampleMeta[2];
-
-        $this->fullSampleMap[] = [ftell($this->file), $sampleMeta[2], 1024, $this->currentChunk]; //[offset, bytesPerSample, sampleDelta, chunk]
+        
+        $this->consecutiveWriteLocation = $this->currentWriteLocation + $sampleMeta[0];
+        
+        $this->duration+= $sampleDelta; //add up the duration
+        $this->fullSampleMap[] = [ftell($this->file), $sampleMeta[0], $sampleDelta, $this->currentChunk]; //[offset, bytesPerSample, sampleDelta, chunk]
         $this->chunkRunTable[] = $this->currentChunk;
         fwrite($this->file, $sample);
         $this->currentSample++; // advance the current sample
@@ -240,11 +314,16 @@ class AudioTrack extends \Isolator\Presentation\Track {
     }
 
     public function getSampleCount() {
+        
         return $this->sampleCount;
     }
 
     public function finalize() {
-
+        $this->durationInRealTime = $this->duration / $this->sampleRate * 1000;
+        $this->mdhd->setTimeScale($this->sampleRate);
+        $this->mdhd->setDuration($this->duration);
+        $this->tkhd->setDuration($this->durationInRealTime);
+        
         $this->encodeDeltaTable();
         $this->encodeChunkTable();
         $this->encodeSampleSizeTable();
@@ -254,6 +333,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->stsc->setChunkTable($this->chunkTable);
         $this->stsz->setSampleSizeTable($this->sampleSizeTable);
         $this->stco->setChunkOffsetTable($this->chunkOffsetTable);
+        
     }
 
     private function encodeDeltaTable() {
@@ -301,4 +381,7 @@ class AudioTrack extends \Isolator\Presentation\Track {
         }
     }
 
+    public function getDurationInRealTime(){
+        return $this->durationInRealTime;
+    }
 }

@@ -86,6 +86,18 @@ class Ftyp extends \Isolator\Box {
 
         return $this->minorVersion;
     }
+    
+    public function setMajorBrand($majorBrand){
+        $this->majorBrand = $majorBrand;
+    }
+    
+    public function setMinorVersion($minorVersion){
+        $this->minorVersion = $minorVersion;
+    }
+    
+    public function setCompatibleBrands($compatibleBrands){
+        $this->compatibleBrands = $compatibleBrands;
+    }
 
     public function getCompatibleBrands() {
 

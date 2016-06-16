@@ -76,5 +76,9 @@ class Mp4a extends \Isolator\Boxes\SampleEntries\AudioSampleEntry {
         \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->size); //Overwrite the box size
         fseek($this->file, $boxEnd); //Finally put the file pointer back at the end of the file
     }
+    
+    public function setSampleRate($sampleRate){
+        $this->sampleRate = $sampleRate;
+    }
 
 }

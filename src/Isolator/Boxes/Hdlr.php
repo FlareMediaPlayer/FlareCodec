@@ -81,4 +81,7 @@ class Hdlr extends \Isolator\FullBox {
         \Isolator\ByteUtils::writeCString($this->file, $this->name);
     }
 
+    public function setHandlerType($handlerType){
+        $this->handlerType = $handlerType;
+    }
 }

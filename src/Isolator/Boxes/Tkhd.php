@@ -155,4 +155,11 @@ class Tkhd extends \Isolator\FullBox {
         }
     }
 
+    public function setDuration($duration){
+        $this->duration = $duration;
+    }
+    
+    public function setVolume($volume){
+        $this->volume = $volume;
+    }
 }

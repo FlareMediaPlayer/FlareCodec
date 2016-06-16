@@ -182,13 +182,16 @@ class Iso {
         
         //Need to rethink the constructors
         $ftyp = new \Isolator\Boxes\Ftyp($iso->getFile());
-        $ftyp->loadDataFromBox($inputIso->getFtyp());
+        //$ftyp->loadDataFromBox($inputIso->getFtyp());
+        $ftyp->setMajorBrand("isom");
+        $ftyp->setMinorVersion(512);
+        $ftyp->setCompatibleBrands(["isom","iso2"]);
         
         $iso->addBox($ftyp);
         
         $free = new \Isolator\Boxes\Free($iso->getFile());
         $iso->addBox($free);
-        $free->setFreeBytes(8); //Add some extra padding to extend header size if necessary
+        $free->setFreeBytes(0); //Add some extra padding to extend header size if necessary
         $ftyp->writeToFile();
         $free->writeToFile();
         
@@ -207,7 +210,7 @@ class Iso {
             
             //$audioTrack = new \Isolator\Presentation\AudioTrack($track);
             $audioTrack = $inputIso->addMappedAudioTrack($track);
-            //$audioTrack->setOutputFile($outputFile);
+            $audioTrack->setOutputFile($outputFile);
             //$audioTrack->dumpBinary($iso->getFile()); // Testing for now
             $newAudioTrack = $iso->addNewAudioTrack();
             

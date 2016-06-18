@@ -19,40 +19,38 @@ class Edts extends \Isolator\Box {
     }
     
     public function loadData() {
+        
+        $this->readHeader();
         $this->loadChildBoxes();
-/*
-        $headerLength = 8;
-        $internalOffset = $this->offset + $headerLength;
-
-
-        do {
-            //Set the offset 
-
-            fseek($this->file, $internalOffset);
-
-            $boxSize = \Isolator\ByteUtils::readUnsingedInteger($this->file);
-            $boxType = \Isolator\ByteUtils::readBoxType($this->file);
-            
-
-
-            //if (array_key_exists($boxType, \Isolator\Box::$boxTable)) {
-
-
-                $newBox = //\Isolator\Box::$boxTable[$boxType]->newInstance($this->file);
-                $newBox->container = $this;
-                $newBox->setSize($boxSize);
-                $newBox->setOffset($internalOffset);
-                $newBox->loadData();
-                $this->boxMap[] = $newBox;
-                
-            //}
-
-
-
-            $internalOffset += $boxSize;
-        } while (($internalOffset - $this->offset ) < $this->size);
- * */
  
     }
+    
+    public function writeToFile() {
+        $this->prepareForWriting();
+        foreach($this->boxMap as $box){
+            $box->writeToFile();
+        }
+        $this->finalizeWriting();
+    }
+    
+    public function prepareForWriting(){
+        
+        $this->offset = ftell($this->file); //Save the file pointer
+        $this->headerSize = 8;
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, 0); //Write the box size, place holder for now
+        \Isolator\ByteUtils::writeChars($this->file, $this->boxType); //Write the box type
+        
+    }
+    
+    public function finalizeWriting(){
+        
+        $boxEnd = ftell($this->file); // Save the current position
+        $this->size = $boxEnd - $this->offset;
+        fseek($this->file, $this->offset); //Reset write pointer to beginning of file
+        \Isolator\ByteUtils::writeUnsignedInteger($this->file, $this->size); //Overwrite the box size
+        fseek($this->file, $boxEnd); //Finally put the file pointer back at the end of the file
+
+    }
+    
 
 }

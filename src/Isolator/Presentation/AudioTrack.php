@@ -60,6 +60,12 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->tkhd = new \Isolator\Boxes\Tkhd($this->file);
         $this->tkhd->setVolume(1);
         $this->trak->addBox($this->tkhd);
+        
+        $this->edts = new \Isolator\Boxes\Edts($this->file);
+        $this->trak->addBox($this->edts);
+        
+        $this->elst = new \Isolator\Boxes\Elst($this->file);
+        $this->edts->addBox($this->elst);
 
         $this->mdia = new \Isolator\Boxes\Mdia($this->file);
         $this->trak->addBox($this->mdia);
@@ -329,6 +335,9 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->mdhd->setDuration($this->duration);
         $this->tkhd->setDuration($this->durationInRealTime);
         $this->tkhd->setTrackID($this->trackID);
+        $segmentTable = array(["segmentDuration" =>  $this->durationInRealTime , "mediaTime" => 0 ]);
+        $this->elst->setSegmentTable($segmentTable);
+        $this->elst->setMediaRateInteger(1);
         
         $this->encodeDeltaTable();
         $this->encodeChunkTable();

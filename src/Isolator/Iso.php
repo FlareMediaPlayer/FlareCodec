@@ -210,9 +210,11 @@ class Iso {
             
             //$audioTrack = new \Isolator\Presentation\AudioTrack($track);
             $audioTrack = $inputIso->addMappedAudioTrack($track);
+            
             $audioTrack->setOutputFile($outputFile);
             //$audioTrack->dumpBinary($iso->getFile()); // Testing for now
             $newAudioTrack = $iso->addNewAudioTrack();
+            
             
             //now we connect the input iso to the newly made iso
             $dataBuffer->setInputTrack($audioTrack);

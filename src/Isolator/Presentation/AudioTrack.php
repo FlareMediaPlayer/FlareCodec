@@ -260,21 +260,6 @@ class AudioTrack extends \Isolator\Presentation\Track {
     }
 
     public function dumpBinary($outputFile) {
-        //Lets Try Dumping raw binary to file
-        
-        //var_dump(count($this->dataMap));
-        //var_dump($this->sampleCount);
-        /*
-        for ($i = 0; $i < count($this->dataMap); $i++) {
-
-            fseek($this->file, $this->dataMap[$i][0]);
-
-            $data = fread($this->file, $this->dataMap[$i][2]);
-            fwrite($outputFile, $data);
-            
-        }
-         * */
-        
          for ($i = 0; $i < count($this->expandedDataTable); $i++) {
 
             fseek($this->file, $this->expandedDataTable[$i][1]);
@@ -286,11 +271,6 @@ class AudioTrack extends \Isolator\Presentation\Track {
     }
     
     public function readSample(&$sample) {
-        //$chunk = $this->sampleToChunkMap[$this->currentSample]; //Find which chunk it belongs to
-        //fseek($this->file, $this->dataMap[$chunk][0]);
-        //$sample = fread($this->file, $this->dataMap[$chunk][2]);
-
-        //$this->currentSample++;
         fseek($this->file, $this->expandedDataTable[$this->currentSample][1]);
         $sample = fread($this->file, $this->expandedDataTable[$this->currentSample][0]);
         $metaData = $this->expandedDataTable[$this->currentSample]; 
@@ -335,6 +315,8 @@ class AudioTrack extends \Isolator\Presentation\Track {
         $this->mdhd->setDuration($this->duration);
         $this->tkhd->setDuration($this->durationInRealTime);
         $this->tkhd->setTrackID($this->trackID);
+        $this->tkhd->setAlternateGroup(1); //0 doesn't work for some reason
+        
         $segmentTable = array(["segmentDuration" =>  $this->durationInRealTime , "mediaTime" => 0 ]);
         $this->elst->setSegmentTable($segmentTable);
         $this->elst->setMediaRateInteger(1);

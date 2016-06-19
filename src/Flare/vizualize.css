@@ -1,0 +1,43 @@
+/* 
+    Created on : Jun 1, 2016, 10:12:30 PM
+    Author     : mac
+*/
+
+.Flare_iso_container{
+    padding: 20px;
+    background-color: grey;
+    
+}
+
+.Flare_iso_container div{
+    padding: 10px 0 10px 10px;
+    border: 1px solid black;
+}
+
+.Flare_box_depth_1{
+    background-color: red;
+}
+
+.Flare_box_depth_2{
+    background-color: green;
+}
+
+.Flare_box_depth_3{
+    background-color: blue;
+}
+
+.Flare_box_depth_4{
+    background-color:white;
+}
+
+.Flare_box_depth_5{
+    background-color:yellowgreen;
+}
+
+.Flare_box_depth_6{
+    background-color:purple;
+}
+
+.Flare_box_depth_7{
+    background-color: aqua;
+}

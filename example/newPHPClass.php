@@ -17,15 +17,16 @@ ini_set('html_errors', 0);
 // ----------------------------------------------------------------------------------------------------
 error_reporting((E_ALL));
 
-require_once '../src/Isolator/AutoLoader.php';
+require_once '../src/Flare/AutoLoader.php';
 
 
-$iso = new  Isolator\Iso("sample.mp4");
+$iso = new Flare\Formats\Iso\Iso("sample.mp4");
 $iso->loadData();
-//$audioTracks = $iso->getAudioTracks();
 
-$rippedTrack = Isolator\Iso::RipAudio($iso, "output.m4a");
-Isolator\IsoVisualizer::visualize($iso);
+$decoder = new Flare\Codecs\H264\H264Decoder();
 
-Isolator\IsoVisualizer::visualize($rippedTrack);
 
+$rippedTrack = Flare\Formats\Iso\Iso::RipAudio($iso, "output.m4a");
+Flare\IsoVisualizer::visualize($iso);
+
+Flare\IsoVisualizer::visualize($rippedTrack);

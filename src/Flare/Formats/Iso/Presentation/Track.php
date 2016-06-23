@@ -26,4 +26,8 @@ class Track {
         return $this->trak;
     }
     
+    public static function createMappedTrack($trak){
+     
+    }
+    
 }

@@ -25,17 +25,7 @@ class Iso {
         $this->file = fopen($this->filename, "rb+") or die("Unable to open file!");
         $this->fileSize = filesize($filename);
         $this->boxMap = [];
-         //$test = new \Flare\Formats\Iso\Boxes\Mdat($this->file);
-        //$this->movie = new \Flare\Formats\Iso\Presentation\Movie($this);
-        //$this->movie = new Presentation\nob();
-        //$this->loadData();
-        //var_dump($this->boxMap);
-        //$this->initMovie();
-        $this->movie = new \Flare\Formats\Iso\Presentation\Movie($this); //Initialize the presentation holder
-    }
-    
-    function initMovie(){
-        $this->movie = new \Flare\Formats\Iso\Presentation\Movie($this);
+        $this->movie = new Presentation\Movie($this); //Initialize the presentation holder
     }
     
 
@@ -47,33 +37,6 @@ class Iso {
         return $this->boxMap;
     }
     
-    
-    public function displayBoxMap() {
-        
-        echo "<div>";
-        echo "<h1>>" . basename($this->filename) . "</h1>";
-        foreach ($this->boxMap as $box) {
-            echo "<div>";
-            $box->displayBoxMap();
-            echo "box";
-            echo "</div>";
-        }
-        echo "</div>";
-        
-    }
-
-    public function displayDetailedBoxMap() {
-      
-        echo "<div>";
-        echo "<h1>>" . basename($this->filename) . "</h1>";
-        foreach ($this->boxMap as $box) {
-            echo "<div>";
-            $box->displayDetailedBoxMap();
-            echo "</div>";
-        }
-        echo "</div>";
-        
-    }
 
     public function loadData() {
 
@@ -84,26 +47,47 @@ class Iso {
         $newBox;
         
         do {
-            //Set the offset 
-            //fseek($this->file, $offset);
-
-            //$boxSize = ByteUtils::readUnsingedInteger($this->file);
-            //$boxType = ByteUtils::readBoxType($this->file);
-            
-
                 
-            $newBox = \Flare\Formats\Iso\Box::parseTopLevelBox($this->file, $offset, $this);
+            $newBox = Box::parseTopLevelBox($this->file, $offset, $this);
             
             if($newBox instanceof \Flare\Formats\Iso\Boxes\Moov){
                 $this->moov = $newBox;
-           
                 
             }
                 
-   
-
             $offset += $newBox->getSize();
         } while ($offset < $this->fileSize);
+        
+        $this->loadMovieDataFromFile(); // Now we can fill in the generated information into the movie data
+    }
+    
+    /**
+     * Use this function to fill in the Movie information after mapping the file
+     */
+    public function loadMovieDataFromFile(){
+        
+        $moovTracks = $this->moov->getBoxMap();
+        foreach($moovTracks as $box){
+            $boxType = get_class($box);
+            
+            switch (true){
+               
+                case $box instanceof Box::$boxTable[Box::MVHD] :
+                    //If we encounter a movie header, import the data to the movie
+                    $this->movie->setMvhdData($box);
+                    break;
+                
+                case $box instanceof Box::$boxTable[Box::TRAK] :
+                    //Load each mapped track
+                    $this->movie->addMappedTrack($box);
+                    break;
+                 
+                default :
+
+                    //For now don't add other boxes to the movie
+            }
+            
+        }
     }
 
     public function addBox($box){
@@ -135,13 +119,6 @@ class Iso {
     
     function createEmptyIso(){
         
-    }
-    
-    function getFtyp(){
-        foreach($this->boxMap as $box){
-            if( $box instanceof \Flare\Formats\Iso\Boxes\Ftyp)
-                return $box;
-        }
     }
     
     public function getMoov(){
@@ -208,11 +185,10 @@ class Iso {
 
         foreach ($audioTracks as $track){
             
-            //$audioTrack = new \Flare\Formats\Iso\Presentation\AudioTrack($track);
+
             $audioTrack = $inputIso->addMappedAudioTrack($track);
             
-            $audioTrack->setOutputFile($outputFile);
-            //$audioTrack->dumpBinary($iso->getFile()); // Testing for now
+
             $newAudioTrack = $iso->addNewAudioTrack();
             
             
@@ -248,12 +224,13 @@ class Iso {
     
     public function addMappedAudioTrack($trak){
         
-        return \Flare\Formats\Iso\Presentation\Movie::createMappedAudioTrack($this->movie, $trak);
+        return Presentation\Movie::createMappedAudioTrack($this->movie, $trak);
+    
     }
     
     public function addNewAudioTrack(){
 
-        return \Flare\Formats\Iso\Presentation\Movie::createNewAudioTrack($this->movie);
+        return Presentation\Movie::createNewAudioTrack($this->movie);
     }
     
 }

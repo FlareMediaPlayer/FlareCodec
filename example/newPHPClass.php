@@ -23,8 +23,10 @@ require_once '../src/Flare/AutoLoader.php';
 $iso = new Flare\Formats\Iso\Iso("sample.mp4");
 $iso->loadData();
 
+$decoder = new Flare\Codecs\H264\H264Decoder();
+
+
 $rippedTrack = Flare\Formats\Iso\Iso::RipAudio($iso, "output.m4a");
 Flare\IsoVisualizer::visualize($iso);
 
 Flare\IsoVisualizer::visualize($rippedTrack);
-

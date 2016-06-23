@@ -1,6 +1,6 @@
 <?php
 
-namespace Flare\Codecs\H264\IO;
+namespace Flare\Codecs\H264\Core;
 /**
  * Description of NalUnit
  *

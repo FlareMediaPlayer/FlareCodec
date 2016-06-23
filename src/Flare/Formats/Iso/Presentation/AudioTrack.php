@@ -8,7 +8,7 @@
 
 namespace Flare\Formats\Iso\Presentation;
 
-class AudioTrack extends \Flare\Formats\Iso\Presentation\Track {
+class AudioTrack extends Track {
 
     private $tkhd;
     private $boxMap;
@@ -207,35 +207,7 @@ class AudioTrack extends \Flare\Formats\Iso\Presentation\Track {
                 $currentChunk++;
             }
         }
-        //var_dump($test);
-        //var_dump($this->fullSampleMap);
-        
- /*       
-        //Now finish building the dataMapping
-        $currentIndex = 0;
-        $currentSampleIndex = 0;
 
-        for ($n = 0; $n < $this->chunkTableEntryCount; $n++) {
-            for ($i = 0; $i < $this->chunkRunTable[$n]; $i++) {
-                $this->dataMap[$currentIndex][1] = $this->chunkTable[$n][1];
-                $this->dataMap[$currentIndex][2] = 0;
-                for ($m = 0; $m < $this->chunkTable[$n][1]; $m++) {
-                    $this->dataMap[$currentIndex][2] += $this->sampleSizeTable[$currentSampleIndex];
-                    $currentSampleIndex++;
-                }
-
-                $currentIndex++;
-            }
-        }
-
-        //Finally build the table that maps each sample to a chunk for random access of any sample
-        for ($i = 0; $i < count($this->dataMap); $i++) {
-            for ($n = 0; $n < $this->dataMap[$i][1]; $n++) {
-                $this->sampleToChunkMap[] = $i;
-            }
-        }
- * 
- */
     }
 
     
@@ -249,25 +221,9 @@ class AudioTrack extends \Flare\Formats\Iso\Presentation\Track {
         return fread($this->file, $this->dataMap[$num][2]);
     }
 
-    //Probably just for testing
-    public function setOutputFile($file) {
-        $this->outputFile = $file;
-    }
 
     public function getTrak() {
-        //
         return $this->trak;
-    }
-
-    public function dumpBinary($outputFile) {
-         for ($i = 0; $i < count($this->expandedDataTable); $i++) {
-
-            fseek($this->file, $this->expandedDataTable[$i][1]);
-
-            $data = fread($this->file, $this->expandedDataTable[$i][0]);
-            fwrite($outputFile, $data);
-            
-        }
     }
     
     public function readSample(&$sample) {

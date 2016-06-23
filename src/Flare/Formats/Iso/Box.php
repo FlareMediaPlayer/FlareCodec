@@ -202,7 +202,6 @@ abstract class Box {
         self::SDTP => "\Flare\Formats\Iso\Boxes\Sdtp",
         self::SGPD => "\Flare\Formats\Iso\Boxes\Sgpd",
         self::ESDS => "\Flare\Formats\Iso\Boxes\Esds",
-        
         //Sample Entries, might move these to a different table later
         self::MP4A => "\Flare\Formats\Iso\Boxes\SampleEntries\Mp4a"
     ];
@@ -217,20 +216,18 @@ abstract class Box {
     protected $headerSize;
     protected $toEOF = false;
     protected $largeSize = false;
-    
-    
 
     function __construct($file) {
         $this->boxMap = [];
         $this->file = $file;
     }
-    
-    public static function createBox($boxType, $file){
-        
+
+    public static function createBox($boxType, $file) {
+
         $box;
         if (array_key_exists($boxType, Box::$boxTable)) {
             $box = new Box::$boxTable[$boxType]($file);
-        }else{
+        } else {
             //create an unknown box
             $box = new \Flare\Formats\Iso\Boxes\Unknown($file);
         }
@@ -257,38 +254,15 @@ abstract class Box {
         $this->file = $file;
     }
 
-    public function getFile(){
+    public function getFile() {
         return $this->file;
     }
-    
-    public function getSize(){
+
+    public function getSize() {
         return $this->size;
     }
 
-
     public abstract function loadData();
-
-    public function displayBoxMap() {
-
-        echo "<div>";
-        for ($i = 0; $i < $this->getDepth(); $i++) {
-            $levelPadding.= "--";
-        }
-        echo $levelPadding . ">";
-        echo $this->boxType;
-
-        foreach ($this->boxMap as $box) {
-
-            echo "<div>";
-            $box->displayDetailedBoxMap();
-            echo "</div>";
-        }
-    }
-
-    public function displayDetailedBoxMap() {
-
-        $this->displayBoxMap();
-    }
 
     public function getBoxType() {
         return $this->boxType;
@@ -306,8 +280,6 @@ abstract class Box {
             return 1 + $this->container->getDepth();
         }
     }
-
-
 
     public function setLargeSize($isLarge) {
         $this->largeSize = true;
@@ -336,7 +308,7 @@ abstract class Box {
         //Get Size
         $boxSize = \Flare\Common\ByteUtils::readUnsingedInteger($file);
         $boxType = \Flare\Common\ByteUtils::readBoxType($file);
-        
+
 
 
         //UUID's not yet supported, skip for now
@@ -344,18 +316,18 @@ abstract class Box {
         //Check if Valid addition
 
 
-        
 
-            $newBox = Box::createBox($boxType, $file);// Box::$boxTable[$boxType]->newInstance($file);
-            $newBox->setSize($boxSize);
-            $newBox->setOffset($offset);
-            //just use a flag to set if using 64bit size to avoid doing more tests later
-            //Add container
 
-            $container->addBox($newBox);
-            //If Legit, load data
-            $newBox->loadData();
-        
+        $newBox = Box::createBox($boxType, $file); // Box::$boxTable[$boxType]->newInstance($file);
+        $newBox->setSize($boxSize);
+        $newBox->setOffset($offset);
+        //just use a flag to set if using 64bit size to avoid doing more tests later
+        //Add container
+
+        $container->addBox($newBox);
+        //If Legit, load data
+        $newBox->loadData();
+
 
         return $newBox;
     }
@@ -364,18 +336,18 @@ abstract class Box {
         $this->container = $container;
     }
 
-    public function loadChildBoxes($internalOffset = null , $limit = INF) {
-        
-        if($internalOffset == NULL){
+    public function loadChildBoxes($internalOffset = null, $limit = INF) {
+
+        if ($internalOffset == NULL) {
             $offset = ftell($this->file);
-        }else{
+        } else {
             $offset = $internalOffset;
         }
         $newBox;
         $boxSize = 0;
         $boxType;
         $boxCount = 0;
-        
+
         while (($offset - $this->offset ) < $this->size && $boxCount < $limit) {
             //Set the offset 
 
@@ -394,16 +366,16 @@ abstract class Box {
 
             //if (array_key_exists($boxType, \Flare\Box::$boxTable)) {
 
-                $newBox = Box::createBox($boxType, $this->file); //\Flare\Box::$boxTable[$boxType]->newInstance($this->file);
-                $newBox->setSize($boxSize);
-                $newBox->setOffset($offset);
-                //just use a flag to set if using 64bit size to avoid doing more tests later
-                //Add container
+            $newBox = Box::createBox($boxType, $this->file); //\Flare\Box::$boxTable[$boxType]->newInstance($this->file);
+            $newBox->setSize($boxSize);
+            $newBox->setOffset($offset);
+            //just use a flag to set if using 64bit size to avoid doing more tests later
+            //Add container
 
-                $this->addBox($newBox);
-                $newBox->setContainer($this);
-                //If Legit, load data
-                $newBox->loadData();
+            $this->addBox($newBox);
+            $newBox->setContainer($this);
+            //If Legit, load data
+            $newBox->loadData();
             //}
 
 
@@ -411,41 +383,39 @@ abstract class Box {
             $offset += $boxSize;
         }
     }
-    
 
-    protected function readHeader(){
-        
+    protected function readHeader() {
+
         $headerSize = 8; //4 for size, 4 for type
-        if($this->size > 4294967295){
+        if ($this->size > 4294967295) {
             $headerSize += 4;
         }
-        
-        
+
+
         fseek($this->file, $this->offset + $headerSize); //Set the read position directly after header data
         $this->headerSize = $headerSize; //Set the overall header size;
-        
     }
-    
-    public function getBoxByClass($class){
-        
-        foreach($this->boxMap as $box){
+
+    public function getBoxByClass($class) {
+
+        foreach ($this->boxMap as $box) {
             if ($box instanceof $class)
                 return $box;
         }
-        
+
         return null;
     }
-    
-    public function writeToFile(){
+
+    public function writeToFile() {
         
     }
-    
-    public function calculateSize(){
+
+    public function calculateSize() {
         return 0;
     }
-    
-    private function calculateHeaderSize($childBoxesSize){
 
+    private function calculateHeaderSize($childBoxesSize) {
+        
     }
-}
 
+}

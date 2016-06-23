@@ -196,7 +196,6 @@ class Track {
         $currentSample = 0;
         $currentChunk = 0;
         $offset = 0;
-        $tempDelta = 1024;
         $deltaTableIndex = 0; //Use these to decode the delta table without wasting more arrays
         $deltaTableCounter = 0; //Use these to decode the delta table without wasting more arrays
         
@@ -210,11 +209,11 @@ class Track {
                     $this->expandedDataTable[$currentSample][1] = $offset; // the overall offset
                     $this->expandedDataTable[$currentSample][2] = $i; // the chunk that it belongs to
                     $this->expandedDataTable[$currentSample][3] = $this->chunkRunTable[$i][2]; // desc
-                    $this->expandedDataTable[$currentSample][4] = $this->deltaTable[$deltaTableIndex][1];
+                    $this->expandedDataTable[$currentSample][4] = $this->deltaTable[$deltaTableIndex]["sampleDelta"];
                     
                     $deltaTableCounter++;
                     
-                    if($deltaTableCounter == $this->deltaTable[$deltaTableIndex][0]){
+                    if($deltaTableCounter == $this->deltaTable[$deltaTableIndex]["sampleCount"]){
                        $deltaTableIndex++;
                        $deltaTableCounter = 0;
                     }
@@ -229,11 +228,6 @@ class Track {
             }
         }
         
-        for($i = 0; $i < count($this->deltaTable); $i++){
-            for($x = 0; $x < $this->deltaTable[$i][0]; $x++){
-                
-            }
-        }
     }
 
     public function getSample($num) {
@@ -309,22 +303,19 @@ class Track {
 
     private function encodeDeltaTable() {
 
-        if (count($this->fullSampleMap) == 0) {
-            return [ 0 => 0];
-        }
-
         $delta = $this->fullSampleMap[0][2];
         $deltaCount = 1;
         for ($i = 1; $i < count($this->fullSampleMap); $i++) {
             if ($delta == $this->fullSampleMap[$i][2]) {
                 $deltaCount++;
             } else {
-                $this->deltaTable[] = [$deltaCount, $delta];
+                $this->deltaTable[] = ["sampleCount" => $deltaCount, "sampleDelta" => $delta];
                 $delta = $this->fullSampleMap[$i][2];
                 $deltaCount = 1;
             }
         }
-        $this->deltaTable[] = [$deltaCount, $delta];
+        $this->deltaTable[] = ["sampleCount" => $deltaCount, "sampleDelta" => $delta];
+        
     }
 
     private function encodeChunkTable() {

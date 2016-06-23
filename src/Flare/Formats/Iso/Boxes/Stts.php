@@ -28,8 +28,8 @@ class Stts extends \Flare\Formats\Iso\FullBox {
         for($i = 0; $i < $this->entryCount ; $i++){
             $this->deltaTable[$i] =  
                     [
-                        \Flare\Common\ByteUtils::readUnsingedInteger($this->file) ,
-                        \Flare\Common\ByteUtils::readUnsingedInteger($this->file)
+                        "sampleCount" => \Flare\Common\ByteUtils::readUnsingedInteger($this->file) ,
+                        "sampleDelta" =>\Flare\Common\ByteUtils::readUnsingedInteger($this->file)
                     ];
         }
         
@@ -53,7 +53,7 @@ class Stts extends \Flare\Formats\Iso\FullBox {
     private function formattedTable(){
         $formattedTable = [];
         for($i = 0; $i < $this->entryCount ; $i++){
-            $formattedTable[] = $this->deltaTable[$i][0] . " : " . $this->deltaTable[$i][1];
+            $formattedTable[] = $this->deltaTable[$i]["sampleCount"] . " : " . $this->deltaTable[$i]["sampleDelta"];
         }
         return $formattedTable;
     }
@@ -83,8 +83,8 @@ class Stts extends \Flare\Formats\Iso\FullBox {
         
         \Flare\Common\ByteUtils::writeUnsignedInteger($this->file, $this->entryCount);
         for($i = 0; $i < $this->entryCount; $i++){
-            \Flare\Common\ByteUtils::writeUnsignedInteger($this->file, $this->deltaTable[$i][0]);
-            \Flare\Common\ByteUtils::writeUnsignedInteger($this->file, $this->deltaTable[$i][1]);
+            \Flare\Common\ByteUtils::writeUnsignedInteger($this->file, $this->deltaTable[$i]["sampleCount"]);
+            \Flare\Common\ByteUtils::writeUnsignedInteger($this->file, $this->deltaTable[$i]["sampleDelta"]);
         }
     }
 }

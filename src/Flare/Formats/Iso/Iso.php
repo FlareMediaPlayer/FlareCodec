@@ -49,9 +49,9 @@ class Iso {
         do {
                 
             $newBox = Box::parseTopLevelBox($this->file, $offset, $this);
-            
             if($newBox instanceof \Flare\Formats\Iso\Boxes\Moov){
                 $this->moov = $newBox;
+                
             }
                 
             $offset += $newBox->getSize();
@@ -67,6 +67,7 @@ class Iso {
     public function loadMovieDataFromFile(){
         
         $moovTracks = $this->moov->getBoxMap();
+        
         foreach($moovTracks as $box){
             $boxType = get_class($box);
             
@@ -97,8 +98,14 @@ class Iso {
     }
     
 
+    /**
+     * Returns an array of built audio tracks from this iso's movie object
+     * @return array
+     */
     public function getAudioTracks(){
-        return $this->moov->getAudioTracks();
+        
+        return $this->movie->getAudioTracks();
+        
     }
     
     
@@ -177,26 +184,26 @@ class Iso {
         $dataBuffer = new DataBuffer();
         
         
-
-        foreach ($audioTracks as $track){
+        
+        
+        foreach ($audioTracks as $audioTrack){
             
-
-            $audioTrack = $inputIso->addMappedAudioTrack($track);
-            
-
-            $newAudioTrack = $iso->addNewAudioTrack();
-            
+            $newAudioTrack = $iso->addNewTrackFromProperties($audioTrack); //Creates a new track from the original track properties
             
             //now we connect the input iso to the newly made iso
             $dataBuffer->setInputTrack($audioTrack);
             $dataBuffer->setOutputTrack($newAudioTrack); // We would like to write to the new audio track;
-            //var_dump(get_class($newAudioTrack));
-      
+
+            
             for($i = 0; $i < $audioTrack->getSampleCount(); $i++ ){
                 $dataBuffer->readSample();
                 $dataBuffer->writeSample();
             }
+            
+             
+            
         }
+
         
         $mdat->finalizeWriting();
         $iso->finalize();
@@ -206,34 +213,35 @@ class Iso {
         
     }
     
-    public function setTempTrack($track){
-        $this->tempTrack = $track;
-    }
-    
-    
     public function finalize(){
 
         $this->movie->finalize();
         
     }
     
+    /**
+     * Logic should be handled from the Movie object, simply pass along
+     * @param type $trak
+     * @return type
+     */
     public function addMappedTrack($trak){
         
-        $this->movie->addMappedTrack($trak);
+        return $this->movie->addMappedTrack($trak);
         
-    }
-
-
-    public function addMappedAudioTrack($trak){
-        
-        return Presentation\Movie::createMappedAudioTrack($this->movie, $trak);
-    
     }
     
-    public function addNewAudioTrack(){
-
-        return Presentation\Movie::createNewAudioTrack($this->movie);
+    /**
+     * Logic should be handled from the Movie object, simply pass along
+     * @param type $trak
+     * @return type
+     */
+    public function addNewTrackFromProperties($track){
+        
+        return $this->movie->addNewTrackFromProperties($track);
         
     }
+
+
+
     
 }

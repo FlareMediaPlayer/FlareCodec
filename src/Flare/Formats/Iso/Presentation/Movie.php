@@ -106,6 +106,7 @@ class Movie {
         $this->trackMap[] = $track;
         $track->mapFromTrak($trak);
         $this->trackCount++;
+        return $track;
     }
     
     public function addNewTrack() {
@@ -113,13 +114,35 @@ class Movie {
         $this->trackMap[] = $newTrack;
         $this->moov->addBox($newTrack->getTrak()); //Connect the trac to the moov box
         $this->trackCount++;
+        
     }
     
+    /**
+     * This function adds a new blank track using the properties from an exisitng Track
+     * Right now the track properties are hard coded in AudioTrack but should import
+     * @param type Track
+     */
+    public function addNewTrackFromProperties($track){
+        
+        $handlerType = $track->getHandlerType();
+        
+        $newTrack = Track::CreateNewTrack($this, $handlerType);
+        $this->trackMap[] = $newTrack;
+        $this->trackCount++;
+        $this->moov->addBox($newTrack->getTrak()); //Connect the trac to the moov box
+        //Now do any other necessary copying
+        return $newTrack;
+            
+    }
 
     /**
      * Returns an array with details about the movie
      */
     public function getMovieDetails(){
         
+    }
+    
+    public function getTrackCount(){
+        return $this->trackCount;
     }
 }

@@ -40,10 +40,16 @@ class Track {
     protected $duration = 0;
     protected $durationInRealTime = 0;
     protected $expandedDataTable;
+    
     protected $trak;
     protected $file;
     protected $movie; // Reference to the movie container;
     protected $trackType;
+    
+    protected $height = 0;
+    protected $width = 0;
+    
+    protected $volume;
     
     //Available Track Types
     public static $trackTypes = [
@@ -61,6 +67,10 @@ class Track {
     public function setMovie($movie) {
 
         $this->movie = $movie;
+    }
+    
+    public function getMovie(){
+        return $this->movie;
     }
 
     public function getTrak() {
@@ -94,8 +104,25 @@ class Track {
             //instantiate an unknown
         }
 
+        
 
-
+        return $track;
+    }
+    
+    public static function createNewTrack($movie, $handlerType){
+        //If available instantiate
+        switch ($handlerType) {
+            case \Flare\Formats\Iso\Boxes\Hdlr::SOUN:
+                $track = new AudioTrack($movie);
+                break;
+            case \Flare\Formats\Iso\Boxes\Hdlr::VIDE:
+                $track = new VideoTrack($movie);
+                break;
+            default:
+                $track = new Track($movie);
+            //instantiate an unknown
+        }
+        
         return $track;
     }
 
@@ -105,7 +132,12 @@ class Track {
         $this->dataMap = [];
         $this->sampleToChunkMap = [];
         $this->file = $trak->getFile();
+        
         $this->buildDecodeTable();
+        
+        //Now import specific properties for user friendly access
+        $this->trakID = $this->tkhd->getTrackID();
+        
     }
 
     private function buildDecodeTable() {
@@ -309,6 +341,11 @@ class Track {
         $this->trackID = $ID;
     }
     
+    public function getTrackID(){
+        return $this->trakID;
+    }
+
+
     public function getHandlerType(){
         return $this->handlerType;
     }

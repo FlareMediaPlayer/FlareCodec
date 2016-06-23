@@ -34,25 +34,7 @@ class Moov extends \Flare\Formats\Iso\Box {
 
     }
     
-    public function getAudioTracks(){
-        
-        $tracks = array();
-    
-        foreach($this->boxMap as $box){
-            if($box instanceof \Flare\Formats\Iso\Boxes\Trak){
-                
-                //Check if audio track
-                if($box->isAudioTrack()){
-                    $tracks[] = $box;
-                }
-                
-            }
-        }
-  
-        return $tracks;
 
-    }
-    
     public function getTracks(){
       
         $tracks;

@@ -126,6 +126,7 @@ class Track {
         $this->chunkCount = $this->stco->getEntryCount();
 
 
+        $this->deltaTable = $this->stts->getDeltaTable();
         $this->chunkOffsetTable = $this->stco->getChunkOffsetTable();
         $this->sampleSizeTable = $this->stsz->getSampleSizeTable();
         $this->sampleCount = $this->stsz->getSampleCount();
@@ -164,6 +165,9 @@ class Track {
         $currentChunk = 0;
         $offset = 0;
         $tempDelta = 1024;
+        $deltaTableIndex = 0; //Use these to decode the delta table without wasting more arrays
+        $deltaTableCounter = 0; //Use these to decode the delta table without wasting more arrays
+        
 
         for ($i = 0; $i < count($this->chunkRunTable); $i++) {
 
@@ -174,14 +178,28 @@ class Track {
                     $this->expandedDataTable[$currentSample][1] = $offset; // the overall offset
                     $this->expandedDataTable[$currentSample][2] = $i; // the chunk that it belongs to
                     $this->expandedDataTable[$currentSample][3] = $this->chunkRunTable[$i][2]; // desc
-                    $this->expandedDataTable[$currentSample][4] = $tempDelta;
-
+                    $this->expandedDataTable[$currentSample][4] = $this->deltaTable[$deltaTableIndex][1];
+                    
+                    $deltaTableCounter++;
+                    
+                    if($deltaTableCounter == $this->deltaTable[$deltaTableIndex][0]){
+                       $deltaTableIndex++;
+                       $deltaTableCounter = 0;
+                    }
+                        
 
                     $offset+= $this->expandedDataTable[$currentSample][0];
+                    
                     $currentSample++;
                 }
 
                 $currentChunk++;
+            }
+        }
+        
+        for($i = 0; $i < count($this->deltaTable); $i++){
+            for($x = 0; $x < $this->deltaTable[$i][0]; $x++){
+                
             }
         }
     }

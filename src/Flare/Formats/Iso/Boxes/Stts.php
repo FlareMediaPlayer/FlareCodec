@@ -64,6 +64,11 @@ class Stts extends \Flare\Formats\Iso\FullBox {
         $this->entryCount = count($deltaTable);
     }
     
+    public function getDeltaTable(){
+        return $this->deltaTable;
+    }
+
+
     public function writeToFile() {
         $this->offset = ftell($this->file); //Save the file pointer
         $this->size = 12 + 4 + (8 * $this->entryCount); //12 for header + 4 for count + (4+4)* count for entires 

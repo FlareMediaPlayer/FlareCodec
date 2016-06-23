@@ -3,7 +3,9 @@
 namespace Flare\Formats\Iso\Presentation;
 
 /**
- * Description of Movie
+ * This is an abstract representation of a movie built from the boxes.
+ * A mapped file should automatically generate one of these that makes the demuxers on each track.
+ * 
  *
  * @author Brian Parra
  */
@@ -27,18 +29,26 @@ class Movie {
         $this->trackMap = [];
     }
 
-    public function addNewTrack() {
-        $newTrack = new \Flare\Formats\Iso\Presentation\AudioTrack($this);
-        $this->trackMap[] = $newTrack;
-        //var_dump(get_class($newTrack->getTrak()));
-        $this->moov->addBox($newTrack->getTrak()); //Connect the trac to the moov box
-        $this->trackCount++;
-    }
+
 
     public function addTrack($track) {
         $this->trackMap[] = $track;
         $this->moov->addBox($track->getTrak()); //Connect the trak to the moov box
         $this->trackCount++;
+    }
+    
+    public function getTracks(){
+        return $this->trackMap;
+    }
+    
+    public function getAudioTracks(){
+        $audioTracks = [];
+        foreach($this->trackMap as $track){
+           if ($track->getHandlerType() == \Flare\Formats\Iso\Boxes\Hdlr::SOUN){
+               $audioTracks[] = $track;
+           }
+        }
+        return $audioTracks;
     }
 
     public function finalize() {
@@ -92,10 +102,19 @@ class Movie {
      * @param Trak
      */
     public function addMappedTrack($trak) {
-        $track = Track::createMappedTrack($trak);
-        //$track->setMovie($this);
-        //$this->trackMap[] = $track;
+        $track = Track::createMappedTrack($trak , $this);
+        $this->trackMap[] = $track;
+        $track->mapFromTrak($trak);
+        $this->trackCount++;
     }
+    
+    public function addNewTrack() {
+        $newTrack = new \Flare\Formats\Iso\Presentation\AudioTrack($this);
+        $this->trackMap[] = $newTrack;
+        $this->moov->addBox($newTrack->getTrak()); //Connect the trac to the moov box
+        $this->trackCount++;
+    }
+    
 
     /**
      * Returns an array with details about the movie

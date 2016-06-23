@@ -84,4 +84,8 @@ class Hdlr extends \Flare\Formats\Iso\FullBox {
     public function setHandlerType($handlerType){
         $this->handlerType = $handlerType;
     }
+    
+    public function getHandlerType(){
+        return $this->handlerType;
+    }
 }

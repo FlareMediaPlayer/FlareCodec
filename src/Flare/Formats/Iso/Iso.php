@@ -52,13 +52,13 @@ class Iso {
             
             if($newBox instanceof \Flare\Formats\Iso\Boxes\Moov){
                 $this->moov = $newBox;
-                
             }
                 
             $offset += $newBox->getSize();
         } while ($offset < $this->fileSize);
         
         $this->loadMovieDataFromFile(); // Now we can fill in the generated information into the movie data
+        
     }
     
     /**
@@ -112,14 +112,7 @@ class Iso {
         
         return null;
     }
-    
-    public static function IsoFileFrom(){
-        
-    }
-    
-    function createEmptyIso(){
-        
-    }
+
     
     public function getMoov(){
         foreach($this->boxMap as $box){
@@ -182,6 +175,8 @@ class Iso {
         
         $audioTracks = $inputIso->getAudioTracks();
         $dataBuffer = new DataBuffer();
+        
+        
 
         foreach ($audioTracks as $track){
             
@@ -222,6 +217,13 @@ class Iso {
         
     }
     
+    public function addMappedTrack($trak){
+        
+        $this->movie->addMappedTrack($trak);
+        
+    }
+
+
     public function addMappedAudioTrack($trak){
         
         return Presentation\Movie::createMappedAudioTrack($this->movie, $trak);
@@ -231,6 +233,7 @@ class Iso {
     public function addNewAudioTrack(){
 
         return Presentation\Movie::createNewAudioTrack($this->movie);
+        
     }
     
 }

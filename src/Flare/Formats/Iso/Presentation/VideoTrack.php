@@ -15,4 +15,9 @@ namespace Flare\Formats\Iso\Presentation;
  */
 class VideoTrack extends Track{
     //put your code here
+    public function __construct($movie) {
+        $this->trackType = self::$trackTypes[1];
+        $this->movie = $movie;
+        $this->handlerType = \Flare\Formats\Iso\Boxes\Hdlr::VIDE;
+    }
 }

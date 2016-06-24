@@ -20,6 +20,12 @@ class ByteUtils {
         $dataBuffer = unpack("N", $dataBuffer);
         return $dataBuffer[1];
     }
+    
+    public static function readUnsingedIntegerLE($file) {
+        $dataBuffer = fread($file, 4);
+        $dataBuffer = unpack("V", $dataBuffer);
+        return $dataBuffer[1];
+    }
 
     public static function writeUnsignedInteger($file, $data) {
         $dataBuffer = pack("N", $data);
@@ -49,6 +55,21 @@ class ByteUtils {
         return chr($dataBuffer[1]) . chr($dataBuffer[2]) . chr($dataBuffer[3]) . chr($dataBuffer[4]);
     }
 
+    /**
+     * Reads a 4 character code in Little Endian
+     * @param type $file
+     * @return type
+     */
+    public static function read4CharLE($file) {
+        $dataBuffer = fread($file, 4);
+        $dataBuffer = unpack("V", $dataBuffer);
+        $char1 = chr($dataBuffer[1] & 0x000000FF);
+        $char2 = chr(($dataBuffer[1] >> 8) & 0x000000FF);
+        $char3 = chr(($dataBuffer[1] >> 16) & 0x000000FF);
+        $char4 = chr(($dataBuffer[1] >> 24) & 0x000000FF);
+        return $char1 . $char2 . $char3 . $char4;
+    }
+    
     public static function writeChars($file, $data) {
         fwrite($file, $data);
     }

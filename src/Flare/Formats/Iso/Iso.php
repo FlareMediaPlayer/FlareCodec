@@ -16,7 +16,6 @@ class Iso {
     private $fileSize;
     private $boxMap;
     private $moov; //Keep direct reference to movie box to not waste time iterating every time
-    private $tempTrack; // Needed for testing, later switch with some sort of abstract container
     private $movie; //Create a single movie instance.
 
     function __construct($filename) {

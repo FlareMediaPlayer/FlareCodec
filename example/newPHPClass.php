@@ -19,7 +19,7 @@ error_reporting((E_ALL));
 
 require_once '../src/Flare/AutoLoader.php';
 
-
+/*
 $iso = new Flare\Formats\Iso\Iso("sample.mp4");
 $iso->loadData();
 
@@ -30,3 +30,11 @@ $rippedTrack = Flare\Formats\Iso\Iso::RipAudio($iso, "output.m4a");
 Flare\IsoVisualizer::visualize($iso);
 
 Flare\IsoVisualizer::visualize($rippedTrack);
+*/
+
+$avi = new Flare\Formats\Riff\Riff("piano2.wav");
+try{
+   $avi->loadData(); 
+} catch (Exception $ex) {
+    var_dump($ex->getMessage());
+}

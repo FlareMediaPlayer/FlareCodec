@@ -32,6 +32,7 @@ class Track {
     protected $sampleRate = 48000; // for now this is usually the sample rate for movies
     protected $sampleToChunkTable;
     protected $currentChunk = 0;
+    protected $lastChunk = 0;
     protected $currentWriteLocation;
     protected $consecutiveWriteLocation;
     protected $duration = 0;
@@ -259,6 +260,7 @@ class Track {
         ];
         
         $this->chunkRunTable[] = $this->currentChunk;
+        
         fwrite($this->file, $sample);
         $this->currentSample++; // advance the current sample
     }
@@ -273,6 +275,7 @@ class Track {
     }
 
     public function finalize() {
+        $this->sampleCount = count($this->expandedDataTable);
         $this->durationInRealTime = $this->duration / $this->sampleRate * 1000;
         $this->mdhd->setTimeScale($this->sampleRate);
         $this->mdhd->setDuration($this->duration);
@@ -298,7 +301,6 @@ class Track {
 
     private function encodeDeltaTable() {
 
-        //$delta = $this->fullSampleMap[0][2];
         $delta = $this->expandedDataTable[0]["delta"];
         $deltaCount = 1;
         for ($i = 1; $i < count($this->expandedDataTable); $i++) {
@@ -316,6 +318,7 @@ class Track {
 
     private function encodeChunkTable() {
         //NEED TO CALCULATE CHUNK RUNS FIRST
+        
         $firstChunk = $this->chunkRunTable[0];
         $samplesPerChunk = 1;
 
@@ -330,18 +333,30 @@ class Track {
             }
         }
         $this->chunkTable[] = [$firstChunk + 1, $samplesPerChunk, $sampleDescriptionIndex];
- 
+        
+        
         /**
          * New Version!
          */
+       
         /*
-        echo "<pre>";
-        $firstSampleMeta = $this->expandedDataTable[0];
+      
+        $firstChunkData = $this->expandedDataTable[0];
+        $chunkCounter = 1;
+        $sampleCounter = 1;
+        $chunkRunCounter = 1;
         for($i = 1; $i < count($this->expandedDataTable); $i++){
-            echo $i . ": " .($this->expandedDataTable[$i]["byteCount"]) . " ";
-        }
-        echo "</pre>";
-         * */
+            //If they are in the same chunk, compare esd index, and samples
+            if($this->expandedDataTable[$i]["chunk"] == $firstChunkData["chunk"]){
+                if($this->expandedDataTable[$i]["sampleDescriptionIndex"] == $firstChunkData["sampleDescriptionIndex"]){
+                    $sampleCounter++;
+                }
+            }else{
+                $this->chunkTable[] = [$firstChunkData["chunk"] + 1, $sampleCounter, $firstChunkData["sampleDescriptionIndex"]];
+            }
+            
+        }*/
+       
          
         
     }

@@ -95,6 +95,12 @@ class ByteUtils {
         return $dataBuffer[1];
     }
     
+    public static function readUnsignedShortLE($file) {
+        $dataBuffer = fread($file, 2);
+        $dataBuffer = unpack("v", $dataBuffer);
+        return $dataBuffer[1];
+    }
+    
     public static function writeUnsignedShort($file, $data) {        
         $dataBuffer = pack("n", $data);
         fwrite($file, $dataBuffer);

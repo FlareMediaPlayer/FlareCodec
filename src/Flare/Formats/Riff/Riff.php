@@ -24,25 +24,6 @@ class Riff {
     
     public function loadData(){
         
-        $this->chunkMap = [];
-        
-        do {
-            $fourCC = \Flare\Common\ByteUtils::read4Char($this->file); 
-            switch ($fourCC){
-                
-                case "RIFF":
-                    $this->header = Chunk::CreateChunk($fourCC , $this->file);
-                    $this->header->loadData();
-                    $this->chunkMap[] = $this->header;
-                    var_dump($this->header);
-                    break;
-                
-                default :
-            }
-            
-                
-          
-        } while (ftell($this->file) < $this->fileSize);
-        
     }
+
 }

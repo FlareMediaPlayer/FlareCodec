@@ -18,7 +18,7 @@ namespace Flare\Formats\Riff;
     protected $dwFourCC;
     protected $offset;
     protected $dwChunkSize;
-    //put your code here
+    
     function __construct($dwFourCC, $file){
         $this->dwFourCC = $dwFourCC;
         $this->file = $file;

@@ -9,16 +9,16 @@ namespace Flare\Formats\Riff;
  */
 class Riff {
     
-    private $filename;
-    private $file;
-    private $fileSize;
-    private $chunkMap;
-    private $header;
+    protected $filename;
+    protected $file;
+    protected $fileSize;
+    protected $chunkMap;
+    protected $header;
     
     public function __construct($filename) {
         echo "loading riff file";
         $this->filename = $filename;
-        $this->file = fopen($this->filename, "rb+") or die("Unable to open file!");
+        $this->file = fopen($this->filename, "rb+") or die("cant find file!");
         $this->fileSize = filesize($filename);
     }
     

@@ -11,8 +11,8 @@ class RIFF extends \Flare\Formats\Riff\Chunk{
     
     private $format;
     
-    public function __construct($dwFourCC, $file) {
-        parent::__construct($dwFourCC, $file);
+    public function __construct( $file) {
+        parent::__construct("RIFF", $file);
         
     }
     

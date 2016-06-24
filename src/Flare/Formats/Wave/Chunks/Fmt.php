@@ -6,14 +6,14 @@
  * and open the template in the editor.
  */
 
-namespace Flare\Formats\Riff\Chunks;
+namespace Flare\Formats\Wave\Chunks;
 
 /**
  * This is the format sub chunk
  *
  * @author Brian Parra
  */
-class Fmt extends \Flare\Formats\Riff\Chunk{
+class Fmt extends  \Flare\Formats\Riff\Chunk{
     
     private $audioFormat;
     private $numChannels;
@@ -23,8 +23,8 @@ class Fmt extends \Flare\Formats\Riff\Chunk{
     private $bitsPerSample; //8, 16 ect
     
 
-    public function __construct($dwFourCC, $file) {
-        parent::__construct($dwFourCC, $file);
+    public function __construct( $file) {
+        parent::__construct("fmt ", $file);
         
     }
     

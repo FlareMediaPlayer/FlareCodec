@@ -32,9 +32,9 @@ Flare\IsoVisualizer::visualize($iso);
 Flare\IsoVisualizer::visualize($rippedTrack);
 */
 
-$avi = new Flare\Formats\Riff\Riff("piano2.wav");
+$wave = new Flare\Formats\Wave\Wave("piano2.wav");
 try{
-   $avi->loadData(); 
+   $wave->loadData(); 
 } catch (Exception $ex) {
     var_dump($ex->getMessage());
 }
